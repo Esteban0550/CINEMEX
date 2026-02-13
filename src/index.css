@@ -1,0 +1,105 @@
+/* ===== CINEMEX - Variables Globales ===== */
+:root {
+  /* Paleta de colores Cinemex */
+  --cinemex-red: #E41C23;
+  --cinemex-red-dark: #B91620;
+  --cinemex-red-light: #FF4D54;
+  --cinemex-gold: #FFD700;
+  --cinemex-gold-dark: #F5A623;
+  --cinemex-black: #1A1A1A;
+  --cinemex-dark: #2D2D2D;
+  --cinemex-gray: #4A4A4A;
+  --cinemex-gray-light: #8A8A8A;
+  --cinemex-white: #FFFFFF;
+  --cinemex-cream: #F8F8F8;
+  
+  /* Tipografía */
+  font-family: 'Montserrat', 'Roboto', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  
+  /* Esquema de colores */
+  color-scheme: light;
+  color: var(--cinemex-black);
+  background-color: var(--cinemex-cream);
+  
+  /* Optimización de renderizado */
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== Reset Global ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--cinemex-cream);
+}
+
+/* ===== Tipografía ===== */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--cinemex-black);
+  line-height: 1.3;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+
+p {
+  color: var(--cinemex-gray);
+  line-height: 1.7;
+}
+
+/* ===== Botones Base ===== */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  font-weight: 600;
+}
+
+button:focus {
+  outline: 2px solid var(--cinemex-gold);
+  outline-offset: 2px;
+}
+
+/* ===== Links ===== */
+a {
+  color: var(--cinemex-red);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--cinemex-red-dark);
+}
+
+/* ===== Scrollbar Personalizado ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cinemex-cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--cinemex-gray-light);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cinemex-gray);
+}
