@@ -1,159 +1,117 @@
-// Importamos componentes
-import Button from "../components/Button";
+import { useState } from "react"
 
-function Detalle({ cambiarVista }) {
-  // Datos de ejemplo de la película
-  const pelicula = {
-    title: "Avatar: Fuego y Cenizas",
-    image: "https://m.media-amazon.com/images/M/MV5BMDk2NjI5NzMtNDYxMS00MWQzLThhMGUtYzVhNmI1NjcxMzAzXkEyXkFqcGc@._V1_.jpg",
-    genre: "Ciencia Ficción / Aventura",
-    duration: "3h 15min",
-    rating: "B",
-    director: "James Cameron",
-    cast: "Sam Worthington, Zoe Saldaña, Sigourney Weaver",
-    synopsis: "Jake Sully y Neytiri han formado una familia y hacen todo lo posible por permanecer juntos. Sin embargo, deben abandonar su hogar y explorar las regiones de Pandora cuando una antigua amenaza reaparece con más fuerza que nunca."
-  };
+// Vista de detalle de una película
+function Detalle({ pelicula }) {
+
+  // Estados para el formulario
+  const [nombre, setNombre] = useState("")
+  const [cantidadBoletos, setCantidadBoletos] = useState(1)
+  const [mensaje, setMensaje] = useState("")
+
+  // En el caso que no se seleccione ninguna película
+  if (!pelicula) {
+    return (
+      <main style={{ padding: "24px", textAlign: "center" }}>
+        <h2>No hay película seleccionada</h2>
+      </main>
+    )
+  }
+
+  // Evento submit/enviar
+  function manejarCompra(e) {
+    e.preventDefault()
+
+    setMensaje(
+      `Gracias ${nombre}, compraste ${cantidadBoletos} boleto(s) para ${pelicula.titulo}`
+    )
+
+    // Opcional: limpiar formulario
+    setNombre("")
+    setCantidadBoletos(1)
+  }
 
   return (
-    <main className="page-container">
-      {/* Botón de regreso */}
-      <div style={{ marginBottom: "24px" }}>
-        <Button 
-          text="← Volver a Cartelera" 
-          onClick={() => cambiarVista("cartelera")} 
-          variant="secondary"
-        />
-      </div>
+    <main
+      style={{
+        padding: "24px",
+        maxWidth: "800px",
+        margin: "0 auto"
+      }}
+    >
+      <h2>{pelicula.titulo}</h2>
 
-      {/* Contenedor de detalle */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 2fr",
-        gap: "40px",
-        alignItems: "start"
-      }} className="detalle-container">
-        {/* Imagen de la película */}
-        <div>
-          <img
-            src={pelicula.image}
-            alt={pelicula.title}
+      <img
+        src={pelicula.imagen}
+        alt={pelicula.titulo}
+        style={{
+          width: "100%",
+          borderRadius: "8px",
+          marginBottom: "16px"
+        }}
+      />
+
+      <p>{pelicula.descripcion}</p>
+
+      <hr style={{ margin: "24px 0" }} />
+
+      <h3>Comprar boletos</h3>
+
+      <form onSubmit={manejarCompra}>
+        <div style={{ marginBottom: "12px" }}>
+          <label>Nombre:</label>
+          <input
+            type="text"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
             style={{
+              display: "block",
               width: "100%",
-              borderRadius: "16px",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.2)"
+              padding: "8px",
+              marginTop: "4px"
             }}
-            onError={(e) => {
-              e.target.src = "https://via.placeholder.com/400x600/1A1A1A/FFD700?text=CINEMEX";
-            }}
+            required
           />
         </div>
 
-        {/* Información de la película */}
-        <div>
-          {/* Badge de clasificación */}
-          <span style={{
-            display: "inline-block",
-            background: "var(--cinemex-gold)",
-            color: "var(--cinemex-black)",
-            padding: "4px 16px",
-            borderRadius: "20px",
-            fontSize: "0.85rem",
-            fontWeight: "700",
-            marginBottom: "16px"
-          }}>
-            {pelicula.rating}
-          </span>
-
-          <h1 style={{ 
-            fontSize: "2.5rem", 
-            color: "var(--cinemex-black)",
-            marginBottom: "16px"
-          }}>
-            {pelicula.title}
-          </h1>
-
-          {/* Información rápida */}
-          <div style={{ 
-            display: "flex", 
-            gap: "20px", 
-            marginBottom: "24px",
-            flexWrap: "wrap"
-          }}>
-            <span style={{ 
-              color: "var(--cinemex-gray)",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px"
-            }}>
-              🎬 {pelicula.genre}
-            </span>
-            <span style={{ 
-              color: "var(--cinemex-gray)",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px"
-            }}>
-              ⏱️ {pelicula.duration}
-            </span>
-          </div>
-
-          {/* Sinopsis */}
-          <div style={{ marginBottom: "24px" }}>
-            <h3 style={{ 
-              color: "var(--cinemex-black)", 
-              marginBottom: "12px",
-              fontSize: "1.2rem"
-            }}>
-              Sinopsis
-            </h3>
-            <p style={{ 
-              color: "var(--cinemex-gray)", 
-              lineHeight: "1.8",
-              fontSize: "1rem"
-            }}>
-              {pelicula.synopsis}
-            </p>
-          </div>
-
-          {/* Director y elenco */}
-          <div style={{ marginBottom: "32px" }}>
-            <p style={{ marginBottom: "8px" }}>
-              <strong style={{ color: "var(--cinemex-black)" }}>Director:</strong>{" "}
-              <span style={{ color: "var(--cinemex-gray)" }}>{pelicula.director}</span>
-            </p>
-            <p>
-              <strong style={{ color: "var(--cinemex-black)" }}>Elenco:</strong>{" "}
-              <span style={{ color: "var(--cinemex-gray)" }}>{pelicula.cast}</span>
-            </p>
-          </div>
-
-          {/* Botones de acción */}
-          <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-            <Button 
-              text="Comprar Boletos" 
-              variant="primary"
-              onClick={() => alert("Redirigiendo a compra de boletos...")}
-            />
-            <Button 
-              text="Ver Horarios" 
-              variant="secondary"
-              onClick={() => alert("Mostrando horarios disponibles...")}
-            />
-          </div>
+        <div style={{ marginBottom: "12px" }}>
+          <label>Cantidad de boletos:</label>
+          <input
+            type="number"
+            min="1"
+            value={cantidadBoletos}
+            onChange={(e) => setCantidadBoletos(e.target.value)}
+            style={{
+              display: "block",
+              width: "100%",
+              padding: "8px",
+              marginTop: "4px"
+            }}
+            required
+          />
         </div>
-      </div>
 
-      {/* Estilos responsivos inline */}
-      <style>{`
-        @media (max-width: 768px) {
-          .detalle-container {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
+        <button
+          type="submit"
+          style={{
+            padding: "10px 16px",
+            backgroundColor: "#ff9800",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer"
+          }}
+        >
+          Comprar
+        </button>
+      </form>
+
+      {mensaje && (
+        <p style={{ marginTop: "16px", color: "green" }}>
+          {mensaje}
+        </p>
+      )}
     </main>
-  );
+  )
 }
 
-// Exportamos la vista
-export default Detalle;
+export default Detalle
