@@ -1,179 +1,297 @@
-// Importamos componentes
+/**
+ * ========================================
+ * PÁGINA Alimentos - Menú de Snacks y Bebidas
+ * ========================================
+ * 
+ * Esta página muestra el catálogo de alimentos disponibles
+ * y gestiona un carrito de compras.
+ * 
+ * CONCEPTOS DEMOSTRADOS:
+ * - useState: Estados para alimentos, carga y carrito
+ * - useEffect: Carga de datos asincrona al montar
+ * - Renderizado condicional: Panel del carrito
+ * - Props de funciones: agregarAlCarrito, eliminarDelCarrito
+ * - Iteración de arrays con .map()
+ * 
+ * FLUJO DE DATOS:
+ * 1. useEffect carga datos JSON al montar componente
+ * 2. Usuario hace click en "Agregar" → agregarAlCarrito(item)
+ * 3. Estado global del carrito se actualiza en App.jsx
+ * 4. Re-renderizado muestra productos actualizados
+ */
+
+import { useState, useEffect } from "react";
 import FoodCard from "../components/FoodCard";
+import Button from "../components/Button";
+import { 
+  IconPopcorn, 
+  IconCart, 
+  IconCelebration, 
+  IconStar, 
+  IconDrink, 
+  IconFood, 
+  IconCandy,
+  IconClose
+} from "../components/Icons";
 
-function Alimentos() {
-  // Datos de bebidas
-  const bebidas = [
-    {
-      id: 1,
-      name: "Refresco Grande",
-      image: "https://images.unsplash.com/photo-1581006852262-e4307cf6283a?w=400",
-      price: "75.00",
-      description: "Coca-Cola, Sprite o Fanta de 32oz"
-    },
-    {
-      id: 2,
-      name: "ICEE Mediano",
-      image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400",
-      price: "65.00",
-      description: "Frambuesa, Cereza o Uva"
-    },
-    {
-      id: 3,
-      name: "Café Americano",
-      image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400",
-      price: "55.00",
-      description: "Café recién preparado 12oz"
-    }
-  ];
+function Alimentos({ agregarAlCarrito, carrito = [], eliminarDelCarrito, totalCarrito = 0 }) {
+  // Estados para los datos de alimentos
+  const [alimentos, setAlimentos] = useState({
+    bebidas: [],
+    comestibles: [],
+    dulces: [],
+    combos: []
+  });
+  
+  // Estado de carga
+  const [cargando, setCargando] = useState(true);
+  
+  // Estado para mostrar/ocultar carrito
+  const [mostrarCarrito, setMostrarCarrito] = useState(false);
 
-  // Datos de comestibles (palomitas, hot dogs, etc.)
-  const comestibles = [
-    {
-      id: 1,
-      name: "Palomitas Grandes",
-      image: "https://images.unsplash.com/photo-1585647347483-22b66260dfff?w=400",
-      price: "95.00",
-      description: "Palomitas de maíz con mantequilla"
-    },
-    {
-      id: 2,
-      name: "Hot Dog Jumbo",
-      image: "https://images.unsplash.com/photo-1612392062631-94e0e67e7206?w=400",
-      price: "75.00",
-      description: "Salchicha jumbo con ingredientes"
-    },
-    {
-      id: 3,
-      name: "Nachos con Queso",
-      image: "https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?w=400",
-      price: "85.00",
-      description: "Totopos con queso derretido y jalapeños"
+  // useEffect para cargar alimentos desde JSON
+  useEffect(() => {
+    async function cargarAlimentos() {
+      try {
+        const response = await import("../data/alimentos.json");
+        setAlimentos(response.default);
+        setCargando(false);
+      } catch (error) {
+        console.error("Error cargando alimentos:", error);
+        setCargando(false);
+      }
     }
-  ];
+    
+    cargarAlimentos();
+  }, []);
 
-  // Datos de snacks y dulces
-  const dulces = [
-    {
-      id: 1,
-      name: "M&M's Grande",
-      image: "https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=400",
-      price: "55.00",
-      description: "Chocolate con cacahuate"
-    },
-    {
-      id: 2,
-      name: "Gomitas Surtidas",
-      image: "https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?w=400",
-      price: "45.00",
-      description: "Variedad de gomitas de frutas"
-    },
-    {
-      id: 3,
-      name: "Chocolate Hershey's",
-      image: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=400",
-      price: "50.00",
-      description: "Barra de chocolate con leche"
-    }
-  ];
-
-  // Combos especiales
-  const combos = [
-    {
-      id: 1,
-      name: "Combo Individual",
-      image: "https://images.unsplash.com/photo-1505686994434-e3cc5abf1330?w=400",
-      price: "145.00",
-      description: "Palomitas medianas + Refresco mediano"
-    },
-    {
-      id: 2,
-      name: "Combo Pareja",
-      image: "https://images.unsplash.com/photo-1585647347483-22b66260dfff?w=400",
-      price: "220.00",
-      description: "Palomitas grandes + 2 Refrescos medianos"
-    }
-  ];
+  if (cargando) {
+    return (
+      <div className="page-container" style={{ textAlign: "center", paddingTop: "60px" }}>
+        <h2>Cargando menú...</h2>
+      </div>
+    );
+  }
 
   return (
     <main className="page-container">
-      {/* Título de la sección */}
-      <h1 className="section-title">🍿 Alimentos y Bebidas</h1>
+      {/* ========================================
+          TÍTULO DE LA SECCIÓN
+          ======================================== */}
+      <h1 className="section-title" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <IconPopcorn size={32} color="var(--cinemex-gold)" /> Alimentos y Bebidas
+      </h1>
       <p style={{ color: "var(--cinemex-gray)", marginBottom: "32px" }}>
         Complementa tu experiencia de cine con nuestros deliciosos snacks
       </p>
 
-      {/* Banner de promoción */}
+      {/* ========================================
+          BOTÓN DEL CARRITO
+          onClick alterna visibilidad del panel
+          ======================================== */}
+      <div style={{ marginBottom: "24px" }}>
+        <Button
+          text={<span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <IconCart size={18} /> Ver Carrito ({carrito.length})
+          </span>}
+          onClick={() => setMostrarCarrito(!mostrarCarrito)}
+          variant={carrito.length > 0 ? "gold" : "secondary"}
+        />
+      </div>
+
+      {/* ========================================
+          PANEL DEL CARRITO
+          Se muestra/oculta basado en estado mostrarCarrito
+          Renderizado condicional de contenido
+          ======================================== */}
+      {mostrarCarrito && (
+        <div className="carrito-panel" style={{
+          background: "var(--cinemex-white)",
+          borderRadius: "16px",
+          padding: "24px",
+          marginBottom: "32px",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.1)"
+        }}>
+          <h3 style={{ 
+            marginBottom: "16px", 
+            color: "var(--cinemex-black)",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px"
+          }}>
+            <IconCart size={20} color="var(--cinemex-red)" /> Tu Carrito
+          </h3>
+          
+          {carrito.length === 0 ? (
+            <p style={{ color: "var(--cinemex-gray)" }}>
+              Tu carrito está vacío. ¡Agrega algunos productos!
+            </p>
+          ) : (
+            <>
+              {/* Lista de productos en carrito */}
+              <div style={{ marginBottom: "16px" }}>
+                {carrito.map((item) => (
+                  <div 
+                    key={item.id}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "12px 0",
+                      borderBottom: "1px solid var(--cinemex-cream)"
+                    }}
+                  >
+                    <div>
+                      <strong>{item.name}</strong>
+                      <span style={{ marginLeft: "8px", color: "var(--cinemex-gray)" }}>
+                        x{item.cantidad}
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      <span style={{ color: "var(--cinemex-red)", fontWeight: "bold" }}>
+                        ${(item.price * item.cantidad).toFixed(2)}
+                      </span>
+                      {/* Botón eliminar con icono SVG */}
+                      <button
+                        onClick={() => eliminarDelCarrito(item.id)}
+                        style={{
+                          background: "var(--cinemex-red)",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "50%",
+                          width: "28px",
+                          height: "28px",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center"
+                        }}
+                      >
+                        <IconClose size={14} color="white" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Total del carrito */}
+              <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingTop: "16px",
+                borderTop: "2px solid var(--cinemex-gold)"
+              }}>
+                <strong style={{ fontSize: "1.2rem" }}>Total:</strong>
+                <strong style={{ fontSize: "1.5rem", color: "var(--cinemex-red)" }}>
+                  ${totalCarrito.toFixed(2)}
+                </strong>
+              </div>
+              
+              <Button 
+                text="Proceder al Pago"
+                onClick={() => alert(`Total a pagar: $${totalCarrito.toFixed(2)}\n¡Gracias por tu compra!`)}
+                variant="primary"
+                fullWidth={true}
+              />
+            </>
+          )}
+        </div>
+      )}
+
+      {/* ========================================
+          BANNER PROMOCIONAL
+          Sección destacada con oferta especial
+          ======================================== */}
       <div className="banner" style={{ marginTop: "0", marginBottom: "40px" }}>
-        <h3 className="banner-title">🎉 Combo Especial</h3>
+        <h3 className="banner-title" style={{ display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" }}>
+          <IconCelebration size={24} /> Combo Especial
+        </h3>
         <p className="banner-text">
           Al comprar tu combo, ¡obtén un 15% de descuento en tu próxima visita!
         </p>
       </div>
 
-      {/* Sección: Combos */}
+      {/* ========================================
+          SECCIÓN: COMBOS RECOMENDADOS
+          Mapea array de combos a componentes FoodCard
+          ======================================== */}
       <section>
-        <h2 className="section-subtitle">⭐ Combos Recomendados</h2>
+        <h2 className="section-subtitle" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <IconStar size={24} color="var(--cinemex-gold)" /> Combos Recomendados
+        </h2>
         <div className="cards-grid cards-grid-small">
-          {combos.map((combo) => (
+          {alimentos.combos.map((combo) => (
             <FoodCard
               key={combo.id}
               name={combo.name}
               image={combo.image}
               price={combo.price}
               description={combo.description}
-              onAgregar={() => alert(`${combo.name} agregado al carrito`)}
+              onAgregar={() => agregarAlCarrito(combo)}
             />
           ))}
         </div>
       </section>
 
-      {/* Sección: Bebidas */}
+      {/* ========================================
+          SECCIÓN: BEBIDAS
+          ======================================== */}
       <section style={{ marginTop: "48px" }}>
-        <h2 className="section-subtitle">🥤 Bebidas</h2>
+        <h2 className="section-subtitle" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <IconDrink size={24} color="var(--cinemex-red)" /> Bebidas
+        </h2>
         <div className="cards-grid cards-grid-small">
-          {bebidas.map((bebida) => (
+          {alimentos.bebidas.map((bebida) => (
             <FoodCard
               key={bebida.id}
               name={bebida.name}
               image={bebida.image}
               price={bebida.price}
               description={bebida.description}
-              onAgregar={() => alert(`${bebida.name} agregado al carrito`)}
+              onAgregar={() => agregarAlCarrito(bebida)}
             />
           ))}
         </div>
       </section>
 
-      {/* Sección: Comestibles */}
+      {/* ========================================
+          SECCIÓN: COMESTIBLES
+          ======================================== */}
       <section style={{ marginTop: "48px" }}>
-        <h2 className="section-subtitle">🍕 Comestibles</h2>
+        <h2 className="section-subtitle" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <IconFood size={24} color="var(--cinemex-red)" /> Comestibles
+        </h2>
         <div className="cards-grid cards-grid-small">
-          {comestibles.map((comestible) => (
+          {alimentos.comestibles.map((comestible) => (
             <FoodCard
               key={comestible.id}
               name={comestible.name}
               image={comestible.image}
               price={comestible.price}
               description={comestible.description}
-              onAgregar={() => alert(`${comestible.name} agregado al carrito`)}
+              onAgregar={() => agregarAlCarrito(comestible)}
             />
           ))}
         </div>
       </section>
 
-      {/* Sección: Snacks y Dulces */}
+      {/* ========================================
+          SECCIÓN: SNACKS Y DULCES
+          ======================================== */}
       <section style={{ marginTop: "48px" }}>
-        <h2 className="section-subtitle">🍬 Snacks y Dulces</h2>
+        <h2 className="section-subtitle" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <IconCandy size={24} color="var(--cinemex-red)" /> Snacks y Dulces
+        </h2>
         <div className="cards-grid cards-grid-small">
-          {dulces.map((dulce) => (
+          {alimentos.dulces.map((dulce) => (
             <FoodCard
               key={dulce.id}
               name={dulce.name}
               image={dulce.image}
               price={dulce.price}
               description={dulce.description}
-              onAgregar={() => alert(`${dulce.name} agregado al carrito`)}
+              onAgregar={() => agregarAlCarrito(dulce)}
             />
           ))}
         </div>
@@ -182,5 +300,5 @@ function Alimentos() {
   );
 }
 
-// Exportamos la vista
+// Exportamos el componente para uso en App.jsx
 export default Alimentos;

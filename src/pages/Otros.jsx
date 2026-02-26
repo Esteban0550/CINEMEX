@@ -1,8 +1,56 @@
+/**
+ * ========================================
+ * PÁGINA Otros - Promociones y Servicios
+ * ========================================
+ * 
+ * Esta página muestra información adicional de Cinemex:
+ * promociones, membresías, preventas y formulario de contacto.
+ * 
+ * CONCEPTOS DEMOSTRADOS:
+ * - useState: Estado para formulario (objeto) y lista de suscripciones (array)
+ * - Formulario controlado con onChange dinámico
+ * - onSubmit con preventDefault
+ * - Renderizado dinámico de arrays con .map()
+ * - Spread operator para actualización de objetos/arrays
+ * 
+ * FLUJO DE DATOS:
+ * 1. Usuario llena formulario → onChange actualiza formContacto
+ * 2. Usuario envía formulario → onSubmit agrega a suscripciones
+ * 3. Re-renderizado muestra nueva suscripción en la lista
+ */
+
+import { useState } from "react";
 // Importamos componentes
 import PromoCard from "../components/PromoCard";
 import Button from "../components/Button";
+import { 
+  IconStar, 
+  IconProjector, 
+  IconMovie, 
+  IconWind, 
+  IconPerson, 
+  IconCelebration, 
+  IconCard, 
+  IconTicket, 
+  IconSmartphone, 
+  IconEmail 
+} from "../components/Icons";
 
 function Otros() {
+  // Estados para el formulario de contacto/newsletter
+  const [formContacto, setFormContacto] = useState({
+    nombre: "",
+    email: "",
+    telefono: "",
+    mensaje: ""
+  });
+  
+  // Estado para mostrar suscripciones realizadas (array de objetos)
+  const [suscripciones, setSuscripciones] = useState([]);
+  
+  // Estado para mensaje de éxito
+  const [mensajeExito, setMensajeExito] = useState("");
+
   // Promociones
   const promociones = [
     {
@@ -64,49 +112,73 @@ function Otros() {
     }
   ];
 
-  // Formatos especiales
+  // ========================================
+  // DATOS ESTÁTICOS: FORMATOS DE SALA
+  // Cada formato tiene un icono SVG asociado
+  // ========================================
   const formatos = [
     {
       id: 1,
       name: "IMAX",
-      icon: "🎬",
+      icon: "movie",
       description: "La pantalla más grande con el sonido más envolvente",
       color: "#1A1A1A"
     },
     {
       id: 2,
       name: "4DX",
-      icon: "💨",
+      icon: "wind",
       description: "Vive las películas con movimiento, viento, agua y aromas",
       color: "#E41C23"
     },
     {
       id: 3,
       name: "Platino",
-      icon: "⭐",
+      icon: "star",
       description: "Asientos reclinables y servicio a tu butaca",
       color: "#FFD700"
     },
     {
       id: 4,
       name: "Junior",
-      icon: "🧒",
+      icon: "person",
       description: "Salas diseñadas especialmente para los más pequeños",
       color: "#4CAF50"
     }
   ];
 
+  // Función auxiliar para renderizar icono según tipo
+  const renderFormatoIcon = (iconType, color) => {
+    const iconColor = color === "#FFD700" ? "#1A1A1A" : "white";
+    switch(iconType) {
+      case "movie": return <IconMovie size={48} color={iconColor} />;
+      case "wind": return <IconWind size={48} color={iconColor} />;
+      case "star": return <IconStar size={48} color={iconColor} />;
+      case "person": return <IconPerson size={48} color={iconColor} />;
+      default: return <IconMovie size={48} color={iconColor} />;
+    }
+  };
+
   return (
     <main className="page-container">
-      {/* Título de la sección */}
-      <h1 className="section-title">⭐ Más de Cinemex</h1>
+      {/* ========================================
+          TÍTULO PRINCIPAL DE LA PÁGINA
+          ======================================== */}
+      <h1 className="section-title" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <IconStar size={32} color="var(--cinemex-gold)" /> Más de Cinemex
+      </h1>
       <p style={{ color: "var(--cinemex-gray)", marginBottom: "32px" }}>
         Descubre promociones, membresías, preventas y formatos especiales
       </p>
 
-      {/* Sección: Formatos Especiales */}
+      {/* ========================================
+          SECCIÓN: FORMATOS ESPECIALES
+          Tarjetas con diferentes tipos de salas
+          ======================================== */}
       <section>
-        <h2 className="section-subtitle">🎥 Formatos Especiales</h2>
+        <h2 className="section-subtitle" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <IconProjector size={24} color="var(--cinemex-red)" /> Formatos Especiales
+        </h2>
         <div style={{ 
           display: "grid", 
           gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", 
@@ -134,7 +206,8 @@ function Otros() {
                 e.currentTarget.style.boxShadow = "none";
               }}
             >
-              <span style={{ fontSize: "3rem" }}>{formato.icon}</span>
+              {/* Icono SVG renderizado dinámicamente */}
+              {renderFormatoIcon(formato.icon, formato.color)}
               <h3 style={{ 
                 color: formato.color === "#FFD700" ? "#1A1A1A" : "white",
                 marginTop: "12px",
@@ -154,9 +227,14 @@ function Otros() {
         </div>
       </section>
 
-      {/* Sección: Promociones */}
+      {/* ========================================
+          SECCIÓN: PROMOCIONES
+          Mapea array de promociones a PromoCard
+          ======================================== */}
       <section style={{ marginTop: "48px" }}>
-        <h2 className="section-subtitle">🎉 Promociones</h2>
+        <h2 className="section-subtitle" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <IconCelebration size={24} color="var(--cinemex-gold)" /> Promociones
+        </h2>
         <div className="cards-grid">
           {promociones.map((promo) => (
             <PromoCard
@@ -172,9 +250,13 @@ function Otros() {
         </div>
       </section>
 
-      {/* Sección: Membresías */}
+      {/* ========================================
+          SECCIÓN: MEMBRESÍAS
+          ======================================== */}
       <section style={{ marginTop: "48px" }}>
-        <h2 className="section-subtitle">💳 Membresías</h2>
+        <h2 className="section-subtitle" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <IconCard size={24} color="var(--cinemex-gold)" /> Membresías
+        </h2>
         <div className="cards-grid">
           {membresias.map((membresia) => (
             <PromoCard
@@ -190,9 +272,13 @@ function Otros() {
         </div>
       </section>
 
-      {/* Sección: Preventas */}
+      {/* ========================================
+          SECCIÓN: PREVENTAS
+          ======================================== */}
       <section style={{ marginTop: "48px" }}>
-        <h2 className="section-subtitle">🎟️ Preventas</h2>
+        <h2 className="section-subtitle" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <IconTicket size={24} color="var(--cinemex-red)" /> Preventas
+        </h2>
         <div className="cards-grid">
           {preventas.map((preventa) => (
             <PromoCard
@@ -208,9 +294,13 @@ function Otros() {
         </div>
       </section>
 
-      {/* Banner final */}
+      {/* ========================================
+          BANNER PROMOCIONAL APP
+          ======================================== */}
       <div className="banner" style={{ marginTop: "48px" }}>
-        <h3 className="banner-title">📱 Descarga la App de Cinemex</h3>
+        <h3 className="banner-title" style={{ display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" }}>
+          <IconSmartphone size={24} /> Descarga la App de Cinemex
+        </h3>
         <p className="banner-text">
           Compra tus boletos, acumula puntos y recibe promociones exclusivas. 
           Disponible en App Store y Google Play.
@@ -221,8 +311,225 @@ function Otros() {
           onClick={() => alert("Redirigiendo a la tienda de apps...")}
         />
       </div>
+
+      {/* ========================================
+          SECCIÓN: NEWSLETTER
+          Formulario controlado para suscripción
+          ======================================== */}
+      <section style={{ marginTop: "48px" }}>
+        <h2 className="section-subtitle" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <IconEmail size={24} color="var(--cinemex-red)" /> Suscríbete a nuestro Newsletter
+        </h2>
+        <p style={{ color: "var(--cinemex-gray)", marginBottom: "24px" }}>
+          Recibe promociones exclusivas, preventas y novedades directamente en tu correo.
+        </p>
+        
+        <div style={{ 
+          display: "grid", 
+          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+          gap: "32px"
+        }}>
+          {/* Formulario */}
+          <div style={{
+            background: "var(--cinemex-white)",
+            borderRadius: "16px",
+            padding: "32px",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.08)"
+          }}>
+            {/* FORMULARIO CONTROLADO - onSubmit con preventDefault */}
+            <form onSubmit={manejarSuscripcion}>
+              {/* Campo Nombre - onChange actualiza objeto en estado */}
+              <div style={{ marginBottom: "20px" }}>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
+                  Nombre:
+                </label>
+                <input
+                  type="text"
+                  name="nombre"
+                  value={formContacto.nombre}
+                  onChange={manejarCambioFormulario}
+                  placeholder="Tu nombre"
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    borderRadius: "8px",
+                    border: "2px solid var(--cinemex-cream)",
+                    fontSize: "1rem"
+                  }}
+                />
+              </div>
+
+              {/* Campo Email */}
+              <div style={{ marginBottom: "20px" }}>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
+                  Correo electrónico:
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formContacto.email}
+                  onChange={manejarCambioFormulario}
+                  placeholder="tu@email.com"
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    borderRadius: "8px",
+                    border: "2px solid var(--cinemex-cream)",
+                    fontSize: "1rem"
+                  }}
+                />
+              </div>
+
+              {/* Campo Teléfono */}
+              <div style={{ marginBottom: "20px" }}>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
+                  Teléfono (opcional):
+                </label>
+                <input
+                  type="tel"
+                  name="telefono"
+                  value={formContacto.telefono}
+                  onChange={manejarCambioFormulario}
+                  placeholder="55 1234 5678"
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    borderRadius: "8px",
+                    border: "2px solid var(--cinemex-cream)",
+                    fontSize: "1rem"
+                  }}
+                />
+              </div>
+
+              {/* Campo Mensaje */}
+              <div style={{ marginBottom: "20px" }}>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
+                  Comentarios (opcional):
+                </label>
+                <textarea
+                  name="mensaje"
+                  value={formContacto.mensaje}
+                  onChange={manejarCambioFormulario}
+                  placeholder="¿Algún comentario o sugerencia?"
+                  rows="3"
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    borderRadius: "8px",
+                    border: "2px solid var(--cinemex-cream)",
+                    fontSize: "1rem",
+                    resize: "vertical"
+                  }}
+                />
+              </div>
+
+              <Button 
+                text="Suscribirme"
+                variant="primary"
+                fullWidth={true}
+              />
+            </form>
+
+            {/* Mensaje de éxito */}
+            {mensajeExito && (
+              <div style={{
+                marginTop: "16px",
+                padding: "16px",
+                background: "#d4edda",
+                borderRadius: "8px",
+                color: "#155724"
+              }}>
+                {mensajeExito}
+              </div>
+            )}
+          </div>
+
+          {/* ========================================
+              LISTA DE SUSCRIPCIONES
+              Renderizado dinámico del array de suscripciones
+              ======================================== */}
+          <div>
+            <h4 style={{ marginBottom: "16px" }}>
+              Suscripciones recientes ({suscripciones.length})
+            </h4>
+            
+            {suscripciones.length === 0 ? (
+              <p style={{ color: "var(--cinemex-gray)" }}>
+                Aún no hay suscripciones. ¡Sé el primero!
+              </p>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                {/* Renderizado dinámico del array de suscripciones */}
+                {suscripciones.map((sub, index) => (
+                  <div 
+                    key={index}
+                    style={{
+                      background: "var(--cinemex-white)",
+                      borderRadius: "12px",
+                      padding: "16px",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                      borderLeft: "4px solid var(--cinemex-gold)"
+                    }}
+                  >
+                    <p style={{ fontWeight: "bold", marginBottom: "4px" }}>
+                      {sub.nombre}
+                    </p>
+                    <p style={{ color: "var(--cinemex-gray)", fontSize: "0.9rem" }}>
+                      {sub.email}
+                    </p>
+                    <p style={{ color: "var(--cinemex-gray-light)", fontSize: "0.8rem" }}>
+                      {sub.fecha}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
     </main>
   );
+
+  // Función para manejar cambios en el formulario (para todos los campos)
+  function manejarCambioFormulario(e) {
+    const { name, value } = e.target;
+    // Actualizamos el objeto de estado sin mutación directa (spread operator)
+    setFormContacto({
+      ...formContacto,
+      [name]: value
+    });
+  }
+
+  // Función para manejar el envío del formulario
+  function manejarSuscripcion(e) {
+    // preventDefault evita que el formulario recargue la página
+    e.preventDefault();
+
+    // Creamos nueva suscripción con los datos del formulario
+    const nuevaSuscripcion = {
+      ...formContacto,
+      fecha: new Date().toLocaleString()
+    };
+
+    // Agregamos al array de suscripciones (usando spread para no mutar)
+    setSuscripciones([...suscripciones, nuevaSuscripcion]);
+
+    // Mostramos mensaje de éxito
+    setMensajeExito(`¡Gracias ${formContacto.nombre}! Te has suscrito exitosamente.`);
+
+    // Limpiamos el formulario
+    setFormContacto({
+      nombre: "",
+      email: "",
+      telefono: "",
+      mensaje: ""
+    });
+
+    // Ocultamos el mensaje después de 5 segundos
+    setTimeout(() => setMensajeExito(""), 5000);
+  }
 }
 
 // Exportamos la vista

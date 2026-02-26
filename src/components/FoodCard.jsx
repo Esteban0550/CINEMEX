@@ -2,6 +2,11 @@
 import Button from "./Button";
 
 function FoodCard({ name, image, price, description, onAgregar }) {
+  // Formatear precio (puede venir como número o string)
+  const precioFormateado = typeof price === 'number' 
+    ? price.toFixed(2) 
+    : price;
+
   return (
     <div className="food-card">
       {/* Imagen del alimento */}
@@ -24,12 +29,12 @@ function FoodCard({ name, image, price, description, onAgregar }) {
         )}
         
         {/* Precio */}
-        <p className="food-card-price">${price}</p>
+        <p className="food-card-price">${precioFormateado}</p>
         
         {/* Botón de agregar */}
         {onAgregar && (
           <Button 
-            text="Agregar" 
+            text="Agregar al Carrito" 
             onClick={onAgregar} 
             variant="gold"
           />
