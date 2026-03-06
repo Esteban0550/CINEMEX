@@ -22,10 +22,14 @@
  */
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import MovieCard from "../components/MovieCard";
 import { IconMovie, IconSearch } from "../components/Icons";
 
-function Home({ verDetalle, favoritos = [], toggleFavorito }) {
+function Home({ favoritos = [], toggleFavorito }) {
+  
+  // Hook de navegación de React Router
+  const navigate = useNavigate();
   
   // ========================================
   // DECLARACIÓN DE ESTADOS
@@ -181,7 +185,7 @@ function Home({ verDetalle, favoritos = [], toggleFavorito }) {
                 rating={pelicula.clasificacion}
                 esFavorito={esFavorito(pelicula.id)}
                 onToggleFavorito={() => toggleFavorito(pelicula)}
-                onVerDetalle={() => verDetalle(pelicula)}
+                onVerDetalle={() => navigate(`/pelicula/${pelicula.id}`)}
               />
             ))
           ) : (

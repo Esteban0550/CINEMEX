@@ -23,10 +23,14 @@
  */
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import MovieCard from "../components/MovieCard";
 import { IconMovie, IconSearch, IconHeartFilled } from "../components/Icons";
 
-function Cartelera({ verDetalle, favoritos = [], toggleFavorito }) {
+function Cartelera({ favoritos = [], toggleFavorito }) {
+  
+  // Hook de navegación de React Router
+  const navigate = useNavigate();
   
   // ========================================
   // DECLARACIÓN DE ESTADOS
@@ -189,7 +193,7 @@ function Cartelera({ verDetalle, favoritos = [], toggleFavorito }) {
               rating={pelicula.clasificacion}
               esFavorito={esFavorito(pelicula.id)}
               onToggleFavorito={() => toggleFavorito(pelicula)}
-              onVerDetalle={() => verDetalle(pelicula)}
+              onVerDetalle={() => navigate(`/pelicula/${pelicula.id}`)}
             />
           ))
         ) : (
@@ -231,7 +235,7 @@ function Cartelera({ verDetalle, favoritos = [], toggleFavorito }) {
                 rating={pelicula.clasificacion}
                 esFavorito={true}
                 onToggleFavorito={() => toggleFavorito(pelicula)}
-                onVerDetalle={() => verDetalle(pelicula)}
+                onVerDetalle={() => navigate(`/pelicula/${pelicula.id}`)}
               />
             ))}
           </div>

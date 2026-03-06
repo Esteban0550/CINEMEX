@@ -1,5 +1,6 @@
 import './App.css'
 import { useState } from "react"
+import { Routes, Route } from "react-router-dom"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
 
@@ -9,25 +10,14 @@ import Cartelera from "./pages/Cartelera"
 import Detalle from "./pages/Detalle"
 import Alimentos from "./pages/Alimentos"
 import Otros from "./pages/Otros"
+import Favoritos from "./pages/Favoritos"
 
 function App() {
-  // Se declara un estado que controla qué vista se muestra
-  const [vistaActual, setVistaActual] = useState("home")
-
-  // Aquí nos permite guardar alguna película seleccionada
-  const [peliculaSeleccionada, setPeliculaSeleccionada] = useState(null)
-
   // ESTADO NUEVO #1: Carrito de alimentos (manejo de arreglo en estado)
   const [carrito, setCarrito] = useState([])
 
   // ESTADO NUEVO #2: Películas favoritas (manejo de arreglo en estado)
   const [favoritos, setFavoritos] = useState([])
-
-  // Función para ir a detalle enviando datos
-  function verDetalle(pelicula) {
-    setPeliculaSeleccionada(pelicula)
-    setVistaActual("detalle")
-  }
 
   // Función para agregar al carrito (sin mutación directa - usamos spread operator)
   function agregarAlCarrito(producto) {
@@ -70,53 +60,72 @@ function App() {
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      {/* Header controla navegación principal */}
+      {/* Header con información del carrito y favoritos */}
       <Header 
-        cambiarVista={setVistaActual} 
-        vistaActual={vistaActual} 
         cantidadCarrito={carrito.length}
         cantidadFavoritos={favoritos.length}
       />
 
       {/* Contenido principal con flex-grow para empujar el footer */}
       <main style={{ flex: 1 }}>
-        {/* Renderizado condicional, el triple "=" es para asegurar que solo se cumpla la condición si es exactamente igual */}
-        {vistaActual === "home" && (
-          <Home 
-            verDetalle={verDetalle} 
-            favoritos={favoritos}
-            toggleFavorito={toggleFavorito}
+        <Routes>
+          <Route 
+            path="/" 
+            element={
+              <Home 
+                favoritos={favoritos}
+                toggleFavorito={toggleFavorito}
+              />
+            } 
           />
-        )}
-
-        {vistaActual === "cartelera" && (
-          <Cartelera 
-            verDetalle={verDetalle}
-            favoritos={favoritos}
-            toggleFavorito={toggleFavorito}
+          
+          <Route 
+            path="/cartelera" 
+            element={
+              <Cartelera 
+                favoritos={favoritos}
+                toggleFavorito={toggleFavorito}
+              />
+            } 
           />
-        )}
-
-        {vistaActual === "detalle" && (
-          <Detalle 
-            pelicula={peliculaSeleccionada}
-            esFavorito={favoritos.some(fav => fav.id === peliculaSeleccionada?.id)}
-            toggleFavorito={toggleFavorito}
+          
+          <Route 
+            path="/pelicula/:id" 
+            element={
+              <Detalle 
+                favoritos={favoritos}
+                toggleFavorito={toggleFavorito}
+              />
+            } 
           />
-        )}
-
-        {vistaActual === "alimentos" && (
-          <Alimentos 
-            agregarAlCarrito={agregarAlCarrito}
-            carrito={carrito}
-            eliminarDelCarrito={eliminarDelCarrito}
-            totalCarrito={totalCarrito}
+          
+          <Route 
+            path="/alimentos" 
+            element={
+              <Alimentos 
+                agregarAlCarrito={agregarAlCarrito}
+                carrito={carrito}
+                eliminarDelCarrito={eliminarDelCarrito}
+                totalCarrito={totalCarrito}
+              />
+            } 
           />
-        )}
+          
+          <Route 
+            path="/otros" 
+            element={<Otros />} 
+          />
 
-        {vistaActual === "otros" && (
-          <Otros />
-        )}
+          <Route
+            path="/favoritos"
+            element={
+              <Favoritos
+                favoritos={favoritos}
+                toggleFavorito={toggleFavorito}
+              />
+            }
+          />
+        </Routes>
       </main>
 
       {/* Footer siempre visible */}

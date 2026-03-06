@@ -8,18 +8,22 @@
  * 
  * CONCEPTOS DEMOSTRADOS:
  * - useState: Múltiples estados para formulario y datos
+ * - useParams: Obtener parámetros de la URL (React Router)
+ * - useEffect: Cargar datos basados en el ID de la URL
  * - Formularios controlados con onChange
  * - Evento onSubmit con preventDefault
  * - Renderizado condicional basado en estados
  * - Manejo de objetos en estado (compraRealizada)
  * 
  * FLUJO DE DATOS:
- * 1. Usuario ingresa datos en formulario → onChange actualiza estados
- * 2. Usuario hace submit → onSubmit procesa la compra
- * 3. Estado compraRealizada se actualiza → UI muestra confirmación
+ * 1. useParams obtiene el ID de la URL → busca película
+ * 2. Usuario ingresa datos en formulario → onChange actualiza estados
+ * 3. Usuario hace submit → onSubmit procesa la compra
+ * 4. Estado compraRealizada se actualiza → UI muestra confirmación
  */
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useParams } from "react-router-dom"
 import Button from "../components/Button"
 import { 
   IconHeartFilled, 
@@ -30,7 +34,14 @@ import {
   IconEmail 
 } from "../components/Icons"
 
-function Detalle({ pelicula, esFavorito = false, toggleFavorito }) {
+function Detalle({ favoritos = [], toggleFavorito }) {
+  
+  // Obtenemos el ID de la película desde la URL
+  const { id } = useParams()
+  
+  // Estado para almacenar la película cargada
+  const [pelicula, setPelicula] = useState(null)
+  const [cargando, setCargando] = useState(true)
 
   // Estados para el formulario de compra de boletos
   const [nombre, setNombre] = useState("")
@@ -42,18 +53,55 @@ function Detalle({ pelicula, esFavorito = false, toggleFavorito }) {
   // Estado para almacenar la compra realizada (objeto en estado)
   const [compraRealizada, setCompraRealizada] = useState(null)
 
+  // ========================================
+  // useEffect - CARGAR PELÍCULA POR ID
+  // ========================================
+  useEffect(() => {
+    async function cargarPelicula() {
+      try {
+        // Importamos los datos de películas
+        const response = await import("../data/peliculas.json")
+        const peliculas = response.default
+        
+        // Buscamos la película por ID
+        const peliculaEncontrada = peliculas.find(p => p.id === parseInt(id))
+        
+        setPelicula(peliculaEncontrada)
+        setCargando(false)
+      } catch (error) {
+        console.error("Error al cargar película:", error)
+        setCargando(false)
+      }
+    }
+    
+    cargarPelicula()
+  }, [id]) // Se ejecuta cuando cambia el ID en la URL
+
+  // Verificar si la película está en favoritos
+  const esFavorito = pelicula ? favoritos.some(fav => fav.id === pelicula.id) : false
+
   // Horarios disponibles
   const horariosDisponibles = ["14:30", "16:45", "19:00", "21:30", "23:45"]
   
   // Precio por boleto
   const precioBoleto = 85
 
-  // En el caso que no se seleccione ninguna película
+  // Estado de carga
+  if (cargando) {
+    return (
+      <main className="page-container" style={{ textAlign: "center", paddingTop: "60px" }}>
+        <h2>Cargando película...</h2>
+        <p>Por favor espera un momento</p>
+      </main>
+    )
+  }
+
+  // En el caso que no se encuentre la película
   if (!pelicula) {
     return (
       <main className="page-container" style={{ textAlign: "center", paddingTop: "60px" }}>
-        <h2>No hay película seleccionada</h2>
-        <p>Selecciona una película desde el inicio o la cartelera</p>
+        <h2>Película no encontrada</h2>
+        <p>La película que buscas no existe o ya no está disponible</p>
       </main>
     )
   }
