@@ -1,152 +1,218 @@
-# CINEMEX - Actividad 9 (React Router)
+# CINEMEX - Proyecto React (SPA)
 
-En esta actividad implemente el sistema de navegacion de mi SPA de cine usando `react-router-dom`.
+Aplicacion web tipo SPA inspirada en Cinemex, desarrollada con React + Vite.
 
-Antes estaba navegando con estados y eventos, pero al recargar se perdia la vista.
-Ahora la navegacion se mantiene por URL y eso mejora la experiencia del usuario.
+Incluye:
+- Navegacion con React Router
+- Cartelera y detalle dinamico de peliculas
+- Sistema de favoritos
+- Catalogo de alimentos con carrito
+- Seccion de promociones y formatos
+- Carrusel principal con Swiper
+- Footer global
+- Vistas informativas de texto
 
-## Lo que agregue
+## Objetivo del proyecto
 
-- Instalacion de `react-router-dom`
-- Configuracion de `BrowserRouter`
-- Rutas principales en `App.jsx`
-- Ruta dinamica `/pelicula/:id`
-- Uso de `useParams` para detalle dinamico
-- Menu funcional con `NavLink` y pagina activa
-- Navegacion con `useNavigate`
-- Pagina adicional: `Favoritos`
+Practicar desarrollo frontend modular con componentes reutilizables, manejo de estado con hooks, enrutamiento por URL y diseno responsive.
 
-## 1) Configuracion de React Router
+## Tecnologias usadas
 
-### `src/main.jsx`
+- React 19
+- Vite
+- React Router DOM
+- Swiper
+- CSS (global + por secciones)
 
-```jsx
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
-import './index.css'
-import App from './App.jsx'
+## Dependencias principales
 
-createRoot(document.getElementById('root')).render(
-	<StrictMode>
-		<BrowserRouter>
-			<App />
-		</BrowserRouter>
-	</StrictMode>,
-)
+```json
+{
+	"react": "^19.2.0",
+	"react-dom": "^19.2.0",
+	"react-router-dom": "^7.13.1",
+	"swiper": "^12.1.2"
+}
 ```
 
-## 2) Organizacion de rutas en el archivo principal
+## Funcionalidades implementadas
 
-### `src/App.jsx`
+### 1. Navegacion SPA con rutas
 
-```jsx
-import { Routes, Route } from "react-router-dom"
+Se utiliza `BrowserRouter` y rutas declarativas para mantener la navegacion por URL sin recargar pagina.
 
-<Routes>
-	<Route path="/" element={<Home favoritos={favoritos} toggleFavorito={toggleFavorito} />} />
-	<Route path="/cartelera" element={<Cartelera favoritos={favoritos} toggleFavorito={toggleFavorito} />} />
-	<Route path="/pelicula/:id" element={<Detalle favoritos={favoritos} toggleFavorito={toggleFavorito} />} />
-	<Route path="/alimentos" element={<Alimentos agregarAlCarrito={agregarAlCarrito} carrito={carrito} eliminarDelCarrito={eliminarDelCarrito} totalCarrito={totalCarrito} />} />
-	<Route path="/otros" element={<Otros />} />
-	<Route path="/favoritos" element={<Favoritos favoritos={favoritos} toggleFavorito={toggleFavorito} />} />
-</Routes>
+Rutas actuales:
+- `/` -> Home
+- `/cartelera` -> Cartelera
+- `/pelicula/:id` -> Detalle dinamico por ID
+- `/alimentos` -> Alimentos y carrito
+- `/otros` -> Promociones, formatos y preventas
+- `/favoritos` -> Peliculas favoritas
+- `/terminos` -> Vista informativa (texto)
+- `/privacidad` -> Vista informativa (texto)
+
+### 2. Carrusel de estrenos (Swiper)
+
+Se implemento un nuevo componente:
+- `src/components/MovieCarousel.jsx`
+
+Caracteristicas:
+- Flechas de navegacion
+- Paginacion clickable
+- Autoplay
+- Loop infinito
+- Botones de accion por slide (cartelera y detalle)
+
+Integracion:
+- Se renderiza en `src/pages/Home.jsx`
+
+### 3. Footer global
+
+Se mantiene el footer al final de toda la aplicacion desde `src/App.jsx`.
+
+Componente:
+- `src/components/Footer.jsx`
+
+Contenido:
+- Atencion telefonica prioritaria
+- Enlaces institucionales utiles
+- Bloque de apps y aliados (version simplificada)
+- Cierre legal/copyright
+
+Decisiones de diseno del footer:
+- Se redistribuyo en tres bloques con jerarquia clara: contacto, enlaces utiles y ecosistema digital (apps + aliados).
+- Se compacto la informacion para que el usuario encuentre rapido lo importante sin recorrer un bloque largo.
+- Se incorporaron enlaces directos en la columna central para mejorar navegacion secundaria desde el cierre de pagina.
+- Se ordenaron los elementos por prioridad visual: primero telefono, despues acceso rapido, y al final elementos de confianza de marca.
+- Se aplicaron badges y chips en apps/aliados para separar mejor grupos de informacion sin sobrecargar la interfaz.
+- Se optimizo responsive: en mobile pasa a columna unica con separadores y botones de app a ancho completo para legibilidad y toque.
+
+Por que este cambio fue mejor:
+- Mejora el escaneo visual en menos tiempo.
+- Reduce ruido y mantiene solo informacion util.
+- Refuerza apariencia profesional e institucional.
+- Aumenta claridad de navegacion y contacto desde cualquier vista.
+
+### 4. Manejo de estado
+
+En `src/App.jsx` se administran estados globales compartidos por varias vistas:
+
+- `carrito`: productos de alimentos
+- `favoritos`: peliculas marcadas
+
+Funciones principales:
+- `agregarAlCarrito(producto)`
+- `eliminarDelCarrito(productoId)`
+- `toggleFavorito(pelicula)`
+
+### 5. Home y Cartelera
+
+`Home` y `Cartelera` consumen datos de `src/data/peliculas.json` y muestran tarjetas con:
+- Imagen
+- Titulo
+- Genero
+- Duracion
+- Clasificacion
+- Accion de favorito
+- Accion de ver detalle
+
+Tambien incluyen busqueda y renderizado condicional para estados vacios/carga.
+
+### 6. Detalle dinamico por pelicula
+
+En `src/pages/Detalle.jsx` se usa `useParams()` para leer el `id` de la URL, buscar la pelicula correspondiente y mostrar informacion completa.
+
+### 7. Alimentos y carrito
+
+Vista `Alimentos`:
+- Carga catalogo desde `src/data/alimentos.json`
+- Permite agregar productos
+- Muestra panel de carrito
+- Calcula total de compra
+- Permite eliminar productos
+
+### 8. Vistas informativas (actividad)
+
+Se agregaron 2 vistas solo de texto informativo:
+- `src/pages/Terminos.jsx`
+- `src/pages/Privacidad.jsx`
+
+Ambas conectadas en:
+- `src/App.jsx` (rutas)
+- `src/components/Header.jsx` (enlaces de menu)
+
+## Estructura principal del proyecto
+
+```text
+src/
+	components/
+		Button.jsx
+		FoodCard.jsx
+		Footer.jsx
+		Header.jsx
+		Icons.jsx
+		MovieCard.jsx
+		MovieCarousel.jsx
+		PromoCard.jsx
+	data/
+		alimentos.json
+		peliculas.json
+	pages/
+		Alimentos.jsx
+		Cartelera.jsx
+		Detalle.jsx
+		Favoritos.jsx
+		Home.jsx
+		Otros.jsx
+		Privacidad.jsx
+		Terminos.jsx
+	App.jsx
+	App.css
+	index.css
+	main.jsx
 ```
 
-## 3) Ruta dinamica y `useParams`
+## Scripts disponibles
 
-### `src/pages/Detalle.jsx`
-
-```jsx
-import { useParams } from "react-router-dom"
-
-const { id } = useParams()
-
-useEffect(() => {
-	async function cargarPelicula() {
-		const response = await import("../data/peliculas.json")
-		const peliculas = response.default
-		const peliculaEncontrada = peliculas.find(p => p.id === parseInt(id))
-		setPelicula(peliculaEncontrada)
-		setCargando(false)
-	}
-
-	cargarPelicula()
-}, [id])
+```bash
+npm run dev      # Inicia servidor de desarrollo
+npm run build    # Compila para produccion
+npm run preview  # Previsualiza build
+npm run lint     # Ejecuta ESLint
 ```
 
-Con esto, cada URL tipo `/pelicula/1` o `/pelicula/2` muestra una pelicula diferente.
+## Instalacion y ejecucion local
 
-## 4) Navegacion visible con `NavLink`
-
-### `src/components/Header.jsx`
-
-```jsx
-import { NavLink } from "react-router-dom";
-
-<NavLink
-	to="/cartelera"
-	className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
->
-	Cartelera
-</NavLink>
-```
-
-Use `NavLink` para que la opcion activa del menu se vea marcada y el usuario sepa en que pagina esta.
-
-## 5) Navegacion por accion con `useNavigate`
-
-### `src/pages/Home.jsx` y `src/pages/Cartelera.jsx`
-
-```jsx
-import { useNavigate } from "react-router-dom";
-
-const navigate = useNavigate();
-
-onVerDetalle={() => navigate(`/pelicula/${pelicula.id}`)}
-```
-
-Aqui cuando le das click a "Ver detalle" te manda a la ruta dinamica de esa pelicula.
-
-## 6) Vista adicional (requisito extra)
-
-Agregue la pagina **Favoritos**:
-
-- Archivo: `src/pages/Favoritos.jsx`
-- Ruta: `/favoritos`
-- Opcion nueva en el menu superior
-
-Esta pagina junta las peliculas marcadas como favoritas para tener acceso rapido.
-
-## Justificacion breve de UX
-
-La razon de usar rutas fue que con estado local se perdia la vista al recargar.
-Con React Router se mantiene el flujo por URL, mejora la claridad de navegacion y tambien funciona mejor el boton atras/adelante del navegador.
-
-Tambien se dejo indicador visual de pagina activa para que el usuario no se pierda en la app.
-
-## Como ejecutar el proyecto
+1. Instalar dependencias:
 
 ```bash
 npm install
+```
+
+2. Levantar entorno de desarrollo:
+
+```bash
 npm run dev
 ```
 
-Abrir en navegador:
+3. Abrir en navegador:
 
 ```text
 http://localhost:5173/
 ```
 
-## Rutas implementadas
+## Comprobaciones realizadas
 
-- `/` -> Home
-- `/cartelera` -> Cartelera
-- `/pelicula/:id` -> Detalle dinamico
-- `/alimentos` -> Alimentos
-- `/otros` -> Otros
-- `/favoritos` -> Vista adicional
+Estado actual verificado:
+- `npm run build` -> OK
+- `npm run lint` -> OK
 
-## Nota final
+## Notas academicas
 
-Este README describe lo que se implemento para la Actividad 9: sistema de navegacion y flujos con React Router en una SPA.
+- Proyecto orientado a practica de componentes, hooks, rutas y estado compartido.
+- Las acciones de compra mostradas en UI son demostrativas.
+- El contenido visual y datos son usados con finalidad educativa.
+
+## Autor
+
+Proyecto academico - TSU / Desarrollo Frontend.

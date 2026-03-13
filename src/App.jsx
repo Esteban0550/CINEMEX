@@ -11,6 +11,8 @@ import Detalle from "./pages/Detalle"
 import Alimentos from "./pages/Alimentos"
 import Otros from "./pages/Otros"
 import Favoritos from "./pages/Favoritos"
+import Terminos from "./pages/Terminos"
+import Privacidad from "./pages/Privacidad"
 
 function App() {
   // ESTADO NUEVO #1: Carrito de alimentos (manejo de arreglo en estado)
@@ -125,6 +127,9 @@ function App() {
               />
             }
           />
+
+          <Route path="/terminos" element={<Terminos />} />
+          <Route path="/privacidad" element={<Privacidad />} />
         </Routes>
       </main>
 

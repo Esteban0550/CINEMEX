@@ -93,6 +93,20 @@ function Header({ cantidadCarrito = 0, cantidadFavoritos = 0 }) {
           >
             Favoritos
           </NavLink>
+
+          <NavLink
+            to="/terminos"
+            className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+          >
+            Terminos
+          </NavLink>
+
+          <NavLink
+            to="/privacidad"
+            className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+          >
+            Privacidad
+          </NavLink>
         </nav>
       </div>
     </header>

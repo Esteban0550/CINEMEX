@@ -24,6 +24,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MovieCard from "../components/MovieCard";
+import MovieCarousel from "../components/MovieCarousel";
 import { IconMovie, IconSearch } from "../components/Icons";
 
 function Home({ favoritos = [], toggleFavorito }) {
@@ -119,6 +120,8 @@ function Home({ favoritos = [], toggleFavorito }) {
           Descubre las mejores películas y vive la experiencia del cine
         </p>
       </section>
+
+      <MovieCarousel movies={peliculas} />
 
       {/* ========================================
           SECCIÓN DE PELÍCULAS DESTACADAS

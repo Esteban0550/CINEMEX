@@ -1,88 +1,78 @@
-/**
- * ========================================
- * COMPONENTE Footer - Pie de Página
- * ========================================
- * 
- * Componente que muestra información de contacto,
- * enlaces útiles y copyright de Cinemex.
- * 
- * Utiliza iconos SVG para los datos de contacto.
- */
-
-// Importamos iconos SVG necesarios
-import { IconPhone, IconEmail, IconLocation } from "./Icons";
+import { Link } from "react-router-dom";
 
 function Footer() {
+  const enlaces = [
+    { label: "Sobre Cinemex", href: "/otros" },
+    { label: "Factura Electronica", href: "/terminos" },
+    { label: "Ventas Corporativas", href: "/otros" },
+    { label: "Terminos y condiciones", href: "/terminos" },
+    { label: "Aviso de privacidad", href: "/privacidad" }
+  ];
+
+  const redes = [
+    { label: "FB", icon: "f" },
+    { label: "X", icon: "𝕏" },
+    { label: "IG", icon: "◷" },
+    { label: "YT", icon: "▶" }
+  ];
+
+  const aliados = ["CanaCine", "Arena", "PayPal"];
+
   return (
     <footer className="footer">
-      <div className="footer-container">
-        
-        {/* ========================================
-            SECCIÓN: INFORMACIÓN DE CINEMEX
-            Descripción general de la empresa
-            ======================================== */}
-        <div className="footer-section">
-          <h4>CINEMEX</h4>
-          <p>La mejor experiencia de cine en México. Disfruta de las mejores películas en nuestras salas con la mejor tecnología.</p>
-        </div>
-        
-        {/* ========================================
-            SECCIÓN: ENLACES RÁPIDOS
-            Navegación secundaria del sitio
-            ======================================== */}
-        <div className="footer-section">
-          <h4>Enlaces</h4>
+      <div className="footer-top-accent"></div>
+
+      <div className="footer-cinema-grid">
+        <section className="footer-block footer-contact-block">
+          <div className="footer-brand">
+            <span className="footer-brand-logo">CINEMEX</span>
+          </div>
+          <p className="footer-kicker">Atencion telefonica</p>
+          <p className="footer-phone">55 5257-6969</p>
+
+          <div className="footer-socials" aria-label="Redes sociales">
+            {redes.map((red) => (
+              <a
+                key={red.label}
+                className="footer-social-dot"
+                title={red.label}
+                href="#"
+                onClick={(e) => e.preventDefault()}
+              >
+                {red.icon}
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section className="footer-block footer-links-block">
+          <h4>Enlaces utiles</h4>
           <ul>
-            <li>Cartelera</li>
-            <li>Promociones</li>
-            <li>Alimentos</li>
-            <li>Membresías</li>
+            {enlaces.map((enlace) => (
+              <li key={enlace.label}>
+                <Link to={enlace.href}>{enlace.label}</Link>
+              </li>
+            ))}
           </ul>
-        </div>
-        
-        {/* ========================================
-            SECCIÓN: FORMATOS DE SALA
-            Tipos de experiencias disponibles
-            ======================================== */}
-        <div className="footer-section">
-          <h4>Formatos</h4>
-          <ul>
-            <li>IMAX</li>
-            <li>4DX</li>
-            <li>Platino</li>
-            <li>Junior</li>
-          </ul>
-        </div>
-        
-        {/* ========================================
-            SECCIÓN: CONTACTO
-            Información de contacto con iconos SVG
-            ======================================== */}
-        <div className="footer-section">
-          <h4>Contacto</h4>
-          <ul>
-            <li style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <IconPhone size={16} color="var(--cinemex-gold)" /> 01 800 CINEMEX
-            </li>
-            <li style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <IconEmail size={16} color="var(--cinemex-gold)" /> contacto@cinemex.com
-            </li>
-            <li style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <IconLocation size={16} color="var(--cinemex-gold)" /> Ciudad de México, MX
-            </li>
-          </ul>
-        </div>
+        </section>
+
+        <section className="footer-block footer-extras-block">
+          <h4>Aliados</h4>
+          <div className="footer-partners">
+            {aliados.map((aliado) => (
+              <span key={aliado}>{aliado}</span>
+            ))}
+          </div>
+        </section>
       </div>
-      
-      {/* ========================================
-          PIE DE PÁGINA: COPYRIGHT
-          ======================================== */}
+
       <div className="footer-bottom">
-        <p>© 2026 Cinemex. Todos los derechos reservados. | Proyecto académico TSU</p>
+        <p>
+          © 2026 Cadena Mexicana de Exhibicion S.A. de C.V. — Proyecto frontend con enfoque en experiencia de usuario.
+        </p>
       </div>
     </footer>
   );
 }
 
-// Exportamos el componente
 export default Footer;
