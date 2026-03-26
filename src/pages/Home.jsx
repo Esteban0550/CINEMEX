@@ -1,106 +1,28 @@
-/**
- * ========================================
- * PÁGINA HOME - Inicio de la aplicación
- * ========================================
- * 
- * Muestra las películas destacadas con funcionalidad de búsqueda.
- * 
- * FLUJO DE DATOS (EVENTO → ESTADO → RE-RENDERIZADO):
- * 1. EVENTO: Al cargar el componente, useEffect se dispara
- * 2. ESTADO: Se actualiza "peliculas" con los datos obtenidos via fetch
- * 3. RE-RENDERIZADO: React detecta el cambio en peliculas y re-renderiza la UI
- * 
- * El mismo flujo aplica para la búsqueda:
- * 1. EVENTO: Usuario escribe en el input (onChange)
- * 2. ESTADO: Se actualiza "busqueda" con el valor del input
- * 3. RE-RENDERIZADO: peliculasFiltradas cambia y se muestra nuevo contenido
- * 
- * Props:
- * - verDetalle: función para navegar a la vista de detalle
- * - favoritos: array de películas marcadas como favoritas
- * - toggleFavorito: función para agregar/quitar de favoritos
- */
-
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MovieCard from "../components/MovieCard";
 import MovieCarousel from "../components/MovieCarousel";
 import { IconMovie, IconSearch } from "../components/Icons";
+import { peliculas } from "../data";
 
 function Home({ favoritos = [], toggleFavorito }) {
-  
-  // Hook de navegación de React Router
   const navigate = useNavigate();
-  
-  // ========================================
-  // DECLARACIÓN DE ESTADOS
-  // ========================================
-  
-  // Estado para almacenar las películas cargadas desde JSON
-  const [peliculas, setPeliculas] = useState([])
-  
-  // Estado booleano para indicar si los datos están cargando
-  const [cargando, setCargando] = useState(true)
-  
-  // Estado para el texto de búsqueda ingresado por el usuario
   const [busqueda, setBusqueda] = useState("")
 
-  // ========================================
-  // useEffect - CARGA INICIAL DE DATOS
-  // ========================================
-  // Se ejecuta una sola vez al montar el componente (array de dependencias vacío)
-  useEffect(() => {
-    /**
-     * Función asíncrona para cargar las películas
-     * Simula un fetch desde una API externa
-     */
-    async function cargarPeliculas() {
-      try {
-        // Importación dinámica del JSON (simula fetch a una API)
-        // En producción sería: fetch("https://api.cinemex.com/peliculas")
-        const response = await import("../data/peliculas.json");
-        
-        // Actualizamos el estado con los datos obtenidos
-        setPeliculas(response.default);
-        setCargando(false);
-      } catch (error) {
-        console.error("Error al cargar películas:", error);
-        setCargando(false);
-      }
-    }
-    
-    // Ejecutamos la función asíncrona
-    cargarPeliculas();
-  }, []); // Array vacío = solo se ejecuta al montar el componente
-
-  // ========================================
-  // FILTRADO DE PELÍCULAS
-  // ========================================
-  // Se recalcula automáticamente cuando cambia "busqueda" o "peliculas"
-  const peliculasFiltradas = peliculas.filter(pelicula =>
-    pelicula.titulo.toLowerCase().includes(busqueda.toLowerCase())
-  );
+  const peliculasFiltradas = useMemo(
+    () =>
+      peliculas.filter((pelicula) =>
+        pelicula.titulo.toLowerCase().includes(busqueda.toLowerCase()),
+      ),
+    [busqueda],
+  )
 
   /**
    * Función auxiliar para verificar si una película está en favoritos
    * @param {number} peliculaId - ID de la película a verificar
    * @returns {boolean} - true si está en favoritos
    */
-  const esFavorito = (peliculaId) => {
-    return favoritos.some(fav => fav.id === peliculaId);
-  };
-
-  // ========================================
-  // RENDERIZADO CONDICIONAL - ESTADO DE CARGA
-  // ========================================
-  if (cargando) {
-    return (
-      <div className="page-container" style={{ textAlign: "center", paddingTop: "60px" }}>
-        <h2>Cargando películas...</h2>
-        <p>Por favor espera un momento</p>
-      </div>
-    );
-  }
+  const esFavorito = (peliculaId) => favoritos.some((fav) => fav.id === peliculaId)
 
   // ========================================
   // RENDERIZADO PRINCIPAL
@@ -201,7 +123,7 @@ function Home({ favoritos = [], toggleFavorito }) {
         </div>
       </section>
     </div>
-  );
+  )
 }
 
 export default Home;

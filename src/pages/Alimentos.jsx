@@ -1,28 +1,7 @@
-/**
- * ========================================
- * PÁGINA Alimentos - Menú de Snacks y Bebidas
- * ========================================
- * 
- * Esta página muestra el catálogo de alimentos disponibles
- * y gestiona un carrito de compras.
- * 
- * CONCEPTOS DEMOSTRADOS:
- * - useState: Estados para alimentos, carga y carrito
- * - useEffect: Carga de datos asincrona al montar
- * - Renderizado condicional: Panel del carrito
- * - Props de funciones: agregarAlCarrito, eliminarDelCarrito
- * - Iteración de arrays con .map()
- * 
- * FLUJO DE DATOS:
- * 1. useEffect carga datos JSON al montar componente
- * 2. Usuario hace click en "Agregar" → agregarAlCarrito(item)
- * 3. Estado global del carrito se actualiza en App.jsx
- * 4. Re-renderizado muestra productos actualizados
- */
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import FoodCard from "../components/FoodCard";
 import Button from "../components/Button";
+import { alimentos } from "../data";
 import { 
   IconPopcorn, 
   IconCart, 
@@ -35,43 +14,8 @@ import {
 } from "../components/Icons";
 
 function Alimentos({ agregarAlCarrito, carrito = [], eliminarDelCarrito, totalCarrito = 0 }) {
-  // Estados para los datos de alimentos
-  const [alimentos, setAlimentos] = useState({
-    bebidas: [],
-    comestibles: [],
-    dulces: [],
-    combos: []
-  });
-  
-  // Estado de carga
-  const [cargando, setCargando] = useState(true);
-  
   // Estado para mostrar/ocultar carrito
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
-
-  // useEffect para cargar alimentos desde JSON
-  useEffect(() => {
-    async function cargarAlimentos() {
-      try {
-        const response = await import("../data/alimentos.json");
-        setAlimentos(response.default);
-        setCargando(false);
-      } catch (error) {
-        console.error("Error cargando alimentos:", error);
-        setCargando(false);
-      }
-    }
-    
-    cargarAlimentos();
-  }, []);
-
-  if (cargando) {
-    return (
-      <div className="page-container" style={{ textAlign: "center", paddingTop: "60px" }}>
-        <h2>Cargando menú...</h2>
-      </div>
-    );
-  }
 
   return (
     <main className="page-container">

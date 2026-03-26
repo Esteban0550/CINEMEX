@@ -1,218 +1,172 @@
-# CINEMEX - Proyecto React (SPA)
+# CINEMEX - Optimizacion de rendimiento y buenas practicas (React + Vite)
 
-Aplicacion web tipo SPA inspirada en Cinemex, desarrollada con React + Vite.
+Este proyecto fue optimizado para cumplir la actividad de evaluacion UX enfocada en organizacion del proyecto, buenas practicas y documentacion tecnica.
 
-Incluye:
-- Navegacion con React Router
-- Cartelera y detalle dinamico de peliculas
-- Sistema de favoritos
-- Catalogo de alimentos con carrito
-- Seccion de promociones y formatos
-- Carrusel principal con Swiper
-- Footer global
-- Vistas informativas de texto
+## Objetivo de esta actualizacion
 
-## Objetivo del proyecto
+Aplicar mejoras reales en estructura y mantenimiento del codigo para reducir complejidad, evitar cargas repetidas y facilitar futuras iteraciones del proyecto.
 
-Practicar desarrollo frontend modular con componentes reutilizables, manejo de estado con hooks, enrutamiento por URL y diseno responsive.
+## 1) Organizacion del proyecto
 
-## Tecnologias usadas
+### Cambios aplicados
+
+- Se separo el enrutado en un archivo dedicado:
+  - `src/routes/AppRoutes.jsx`
+- `src/App.jsx` ahora queda enfocado en estado global y layout (Header/Main/Footer).
+- Se agrego un punto central de datos:
+  - `src/data/index.js`
+- Se mantiene `src/data/alimentos.json` y `src/data/peliculas.json` como fuente unica de datos.
+
+### Beneficio tecnico
+
+- Menor acoplamiento entre enrutado y estado global.
+- Mejor mantenibilidad: rutas en un solo lugar.
+- Mejor escalabilidad para agregar nuevas vistas sin ensuciar `App.jsx`.
+
+## 2) Buenas practicas aplicadas
+
+### a) Eliminacion de codigo innecesario
+
+- Se elimino `src/detalles.json` por ser un archivo redundante (duplicaba informacion de peliculas y no se usaba).
+- Se limpiaron bloques de comentarios extensos y desactualizados en paginas clave.
+
+### b) Uso adecuado de archivos para consumo de datos
+
+Antes:
+- Varias paginas hacian `import()` dinamico dentro de `useEffect` para leer JSON en cada vista.
+
+Ahora:
+- Las vistas consumen los datos desde `src/data/index.js`.
+- Se evita repetir logica de carga y estados de carga innecesarios para datos locales estaticos.
+
+Paginas optimizadas:
+- `src/pages/Home.jsx`
+- `src/pages/Cartelera.jsx`
+- `src/pages/Detalle.jsx`
+- `src/pages/Alimentos.jsx`
+
+### c) Mejora de actualizacion de estado
+
+- En `src/App.jsx` se migraron actualizaciones a forma funcional (`setState(prev => ...)`) para evitar dependencias del cierre y hacer el estado mas robusto.
+
+### d) Mejoras de rendimiento ligeras
+
+- Se uso `useMemo` para filtrar peliculas y generar generos en vistas donde aplica (`Home` y `Cartelera`).
+
+## 3) Documentacion del proceso (justificacion tecnica)
+
+### Que se optimizo
+
+- Estructura de rutas.
+- Estructura de datos.
+- Limpieza de codigo redundante.
+- Flujo de estado en carrito/favoritos.
+- Filtrado de datos con memoizacion.
+
+### Por que se eligieron estas decisiones
+
+- Separar rutas mejora lectura y mantenimiento.
+- Centralizar datos evita duplicacion de logica y posibles inconsistencias.
+- Eliminar archivos no usados reduce deuda tecnica.
+- Usar setters funcionales evita errores cuando hay actualizaciones consecutivas.
+- Memoizar filtros reduce calculo en cada render cuando no cambian dependencias.
+
+## Estructura principal actualizada
+
+```text
+src/
+  components/
+  data/
+    alimentos.json
+    peliculas.json
+    index.js
+  pages/
+    Alimentos.jsx
+    Cartelera.jsx
+    Detalle.jsx
+    Favoritos.jsx
+    Home.jsx
+    Otros.jsx
+    Privacidad.jsx
+    Terminos.jsx
+  routes/
+    AppRoutes.jsx
+  App.css
+  App.jsx
+  index.css
+  main.jsx
+```
+
+## Validacion realizada
+
+Comandos ejecutados despues de los cambios:
+
+```bash
+npm run lint
+npm run build
+```
+
+Resultado:
+- Lint sin errores.
+- Build exitoso en Vite.
+
+## Tecnologias
 
 - React 19
 - Vite
 - React Router DOM
 - Swiper
-- CSS (global + por secciones)
+- CSS
 
-## Dependencias principales
-
-```json
-{
-	"react": "^19.2.0",
-	"react-dom": "^19.2.0",
-	"react-router-dom": "^7.13.1",
-	"swiper": "^12.1.2"
-}
-```
-
-## Funcionalidades implementadas
-
-### 1. Navegacion SPA con rutas
-
-Se utiliza `BrowserRouter` y rutas declarativas para mantener la navegacion por URL sin recargar pagina.
-
-Rutas actuales:
-- `/` -> Home
-- `/cartelera` -> Cartelera
-- `/pelicula/:id` -> Detalle dinamico por ID
-- `/alimentos` -> Alimentos y carrito
-- `/otros` -> Promociones, formatos y preventas
-- `/favoritos` -> Peliculas favoritas
-- `/terminos` -> Vista informativa (texto)
-- `/privacidad` -> Vista informativa (texto)
-
-### 2. Carrusel de estrenos (Swiper)
-
-Se implemento un nuevo componente:
-- `src/components/MovieCarousel.jsx`
-
-Caracteristicas:
-- Flechas de navegacion
-- Paginacion clickable
-- Autoplay
-- Loop infinito
-- Botones de accion por slide (cartelera y detalle)
-
-Integracion:
-- Se renderiza en `src/pages/Home.jsx`
-
-### 3. Footer global
-
-Se mantiene el footer al final de toda la aplicacion desde `src/App.jsx`.
-
-Componente:
-- `src/components/Footer.jsx`
-
-Contenido:
-- Atencion telefonica prioritaria
-- Enlaces institucionales utiles
-- Bloque de apps y aliados (version simplificada)
-- Cierre legal/copyright
-
-Decisiones de diseno del footer:
-- Se redistribuyo en tres bloques con jerarquia clara: contacto, enlaces utiles y ecosistema digital (apps + aliados).
-- Se compacto la informacion para que el usuario encuentre rapido lo importante sin recorrer un bloque largo.
-- Se incorporaron enlaces directos en la columna central para mejorar navegacion secundaria desde el cierre de pagina.
-- Se ordenaron los elementos por prioridad visual: primero telefono, despues acceso rapido, y al final elementos de confianza de marca.
-- Se aplicaron badges y chips en apps/aliados para separar mejor grupos de informacion sin sobrecargar la interfaz.
-- Se optimizo responsive: en mobile pasa a columna unica con separadores y botones de app a ancho completo para legibilidad y toque.
-
-Por que este cambio fue mejor:
-- Mejora el escaneo visual en menos tiempo.
-- Reduce ruido y mantiene solo informacion util.
-- Refuerza apariencia profesional e institucional.
-- Aumenta claridad de navegacion y contacto desde cualquier vista.
-
-### 4. Manejo de estado
-
-En `src/App.jsx` se administran estados globales compartidos por varias vistas:
-
-- `carrito`: productos de alimentos
-- `favoritos`: peliculas marcadas
-
-Funciones principales:
-- `agregarAlCarrito(producto)`
-- `eliminarDelCarrito(productoId)`
-- `toggleFavorito(pelicula)`
-
-### 5. Home y Cartelera
-
-`Home` y `Cartelera` consumen datos de `src/data/peliculas.json` y muestran tarjetas con:
-- Imagen
-- Titulo
-- Genero
-- Duracion
-- Clasificacion
-- Accion de favorito
-- Accion de ver detalle
-
-Tambien incluyen busqueda y renderizado condicional para estados vacios/carga.
-
-### 6. Detalle dinamico por pelicula
-
-En `src/pages/Detalle.jsx` se usa `useParams()` para leer el `id` de la URL, buscar la pelicula correspondiente y mostrar informacion completa.
-
-### 7. Alimentos y carrito
-
-Vista `Alimentos`:
-- Carga catalogo desde `src/data/alimentos.json`
-- Permite agregar productos
-- Muestra panel de carrito
-- Calcula total de compra
-- Permite eliminar productos
-
-### 8. Vistas informativas (actividad)
-
-Se agregaron 2 vistas solo de texto informativo:
-- `src/pages/Terminos.jsx`
-- `src/pages/Privacidad.jsx`
-
-Ambas conectadas en:
-- `src/App.jsx` (rutas)
-- `src/components/Header.jsx` (enlaces de menu)
-
-## Estructura principal del proyecto
-
-```text
-src/
-	components/
-		Button.jsx
-		FoodCard.jsx
-		Footer.jsx
-		Header.jsx
-		Icons.jsx
-		MovieCard.jsx
-		MovieCarousel.jsx
-		PromoCard.jsx
-	data/
-		alimentos.json
-		peliculas.json
-	pages/
-		Alimentos.jsx
-		Cartelera.jsx
-		Detalle.jsx
-		Favoritos.jsx
-		Home.jsx
-		Otros.jsx
-		Privacidad.jsx
-		Terminos.jsx
-	App.jsx
-	App.css
-	index.css
-	main.jsx
-```
-
-## Scripts disponibles
-
-```bash
-npm run dev      # Inicia servidor de desarrollo
-npm run build    # Compila para produccion
-npm run preview  # Previsualiza build
-npm run lint     # Ejecuta ESLint
-```
-
-## Instalacion y ejecucion local
-
-1. Instalar dependencias:
-
-```bash
-npm install
-```
-
-2. Levantar entorno de desarrollo:
+## Scripts
 
 ```bash
 npm run dev
+npm run build
+npm run preview
+npm run lint
 ```
 
-3. Abrir en navegador:
+## Criterios de evaluacion y formato de entrega (actividad)
+
+### Entregables solicitados
+
+- Link al repositorio del proyecto.
+- Documento PDF con los contenidos de la actividad.
+
+### Reglas de entrega
+
+- Entrega en tiempo y forma.
+- Por cada dia de retraso se descuentan 2 puntos.
+- Buena ortografia y redaccion.
+
+### Estructura minima del PDF
+
+- Portada con:
+  - Logotipo de la institucion
+  - Nombre del TSU
+  - Asignatura
+  - Cuatrimestre
+  - Nombre completo del alumno
+  - Grupo
+  - Cuatrimestre actual
+- Desarrollo de la actividad
+- Conclusion
+
+### Nombre del archivo PDF
+
+Formato requerido:
 
 ```text
-http://localhost:5173/
+Actividad#_ApellidoPaternoPrimerNombre
 ```
 
-## Comprobaciones realizadas
+Ejemplo:
 
-Estado actual verificado:
-- `npm run build` -> OK
-- `npm run lint` -> OK
+```text
+Actividad3_CabJesus.pdf
+```
 
-## Notas academicas
+## Nota academica
 
-- Proyecto orientado a practica de componentes, hooks, rutas y estado compartido.
-- Las acciones de compra mostradas en UI son demostrativas.
-- El contenido visual y datos son usados con finalidad educativa.
-
-## Autor
-
-Proyecto academico - TSU / Desarrollo Frontend.
+Este proyecto tiene fines educativos para practica de React, organizacion modular, rutas, estado compartido y buenas practicas de frontend.

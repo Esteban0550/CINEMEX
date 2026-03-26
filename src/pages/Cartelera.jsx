@@ -1,109 +1,48 @@
-/**
- * ========================================
- * PÁGINA CARTELERA - Listado de películas
- * ========================================
- * 
- * Muestra todas las películas disponibles con sistema de filtros.
- * Incluye filtrado por género y búsqueda por texto.
- * 
- * FLUJO DE DATOS (EVENTO → ESTADO → RE-RENDERIZADO):
- * 1. EVENTO: useEffect se dispara al montar → fetch de datos
- * 2. ESTADO: setPeliculas actualiza el estado con los datos
- * 3. RE-RENDERIZADO: El componente se re-renderiza mostrando las películas
- * 
- * Para los filtros:
- * 1. EVENTO: Usuario hace click en un género (onClick)
- * 2. ESTADO: setGeneroSeleccionado actualiza el filtro activo
- * 3. RE-RENDERIZADO: peliculasFiltradas cambia → nueva UI
- * 
- * Props:
- * - verDetalle: función para navegar al detalle de una película
- * - favoritos: array con las películas favoritas del usuario
- * - toggleFavorito: función para agregar/quitar de favoritos
- */
-
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MovieCard from "../components/MovieCard";
 import { IconMovie, IconSearch, IconHeartFilled } from "../components/Icons";
+import { peliculas } from "../data";
 
 function Cartelera({ favoritos = [], toggleFavorito }) {
-  
-  // Hook de navegación de React Router
   const navigate = useNavigate();
-  
-  // ========================================
-  // DECLARACIÓN DE ESTADOS
-  // ========================================
-  
-  // Estado para almacenar las películas cargadas desde el JSON
-  const [peliculas, setPeliculas] = useState([])
-  
-  // Estado booleano para indicar el estado de carga
-  const [cargando, setCargando] = useState(true)
-  
-  // Estado para el género seleccionado en el filtro
-  const [generoSeleccionado, setGeneroSeleccionado] = useState("Todos")
-  
-  // Estado para el texto de búsqueda
-  const [busqueda, setBusqueda] = useState("")
 
-  // ========================================
-  // useEffect - CARGA INICIAL DE DATOS
-  // ========================================
-  useEffect(() => {
-    /**
-     * Función asíncrona para obtener las películas
-     * Simula una llamada a una API externa
-     */
-    async function fetchPeliculas() {
-      try {
-        // Import dinámico del JSON (simula fetch de API)
-        const response = await import("../data/peliculas.json");
-        setPeliculas(response.default);
-        setCargando(false);
-      } catch (error) {
-        console.error("Error cargando cartelera:", error);
-        setCargando(false);
-      }
-    }
-    
-    fetchPeliculas();
-  }, []); // Solo se ejecuta al montar el componente
+  const [generoSeleccionado, setGeneroSeleccionado] = useState("Todos")
+  const [busqueda, setBusqueda] = useState("")
 
   // ========================================
   // EXTRACCIÓN DE GÉNEROS ÚNICOS
   // ========================================
   // Usamos Set para eliminar duplicados y spread para convertir a array
-  const generos = ["Todos", ...new Set(peliculas.map(p => p.genero))];
+  const generos = useMemo(
+    () => ["Todos", ...new Set(peliculas.map((p) => p.genero))],
+    [],
+  )
 
   // ========================================
   // FILTRADO DE PELÍCULAS
   // ========================================
   // Aplicamos filtro por género Y por búsqueda de texto
-  const peliculasFiltradas = peliculas.filter(pelicula => {
-    const coincideGenero = generoSeleccionado === "Todos" || pelicula.genero === generoSeleccionado;
-    const coincideBusqueda = pelicula.titulo.toLowerCase().includes(busqueda.toLowerCase());
-    return coincideGenero && coincideBusqueda;
-  });
+  const peliculasFiltradas = useMemo(
+    () =>
+      peliculas.filter((pelicula) => {
+        const coincideGenero =
+          generoSeleccionado === "Todos" || pelicula.genero === generoSeleccionado
+        const coincideBusqueda = pelicula.titulo
+          .toLowerCase()
+          .includes(busqueda.toLowerCase())
+
+        return coincideGenero && coincideBusqueda
+      }),
+    [generoSeleccionado, busqueda],
+  )
 
   /**
    * Verifica si una película está en la lista de favoritos
    * @param {number} id - ID de la película
    * @returns {boolean}
    */
-  const esFavorito = (id) => favoritos.some(fav => fav.id === id);
-
-  // ========================================
-  // RENDERIZADO CONDICIONAL - CARGA
-  // ========================================
-  if (cargando) {
-    return (
-      <div className="page-container" style={{ textAlign: "center", paddingTop: "60px" }}>
-        <h2>Cargando cartelera...</h2>
-      </div>
-    );
-  }
+  const esFavorito = (id) => favoritos.some((fav) => fav.id === id)
 
   // ========================================
   // RENDERIZADO PRINCIPAL
@@ -242,7 +181,7 @@ function Cartelera({ favoritos = [], toggleFavorito }) {
         </section>
       )}
     </div>
-  );
+  )
 }
 
 export default Cartelera;

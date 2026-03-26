@@ -1,30 +1,7 @@
-/**
- * ========================================
- * PÁGINA Detalle - Detalle de Película
- * ========================================
- * 
- * Esta página muestra información detallada de una película
- * y permite al usuario comprar boletos mediante un formulario.
- * 
- * CONCEPTOS DEMOSTRADOS:
- * - useState: Múltiples estados para formulario y datos
- * - useParams: Obtener parámetros de la URL (React Router)
- * - useEffect: Cargar datos basados en el ID de la URL
- * - Formularios controlados con onChange
- * - Evento onSubmit con preventDefault
- * - Renderizado condicional basado en estados
- * - Manejo de objetos en estado (compraRealizada)
- * 
- * FLUJO DE DATOS:
- * 1. useParams obtiene el ID de la URL → busca película
- * 2. Usuario ingresa datos en formulario → onChange actualiza estados
- * 3. Usuario hace submit → onSubmit procesa la compra
- * 4. Estado compraRealizada se actualiza → UI muestra confirmación
- */
-
-import { useState, useEffect } from "react"
+import { useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
 import Button from "../components/Button"
+import { peliculas } from "../data"
 import { 
   IconHeartFilled, 
   IconHeartOutline, 
@@ -35,13 +12,12 @@ import {
 } from "../components/Icons"
 
 function Detalle({ favoritos = [], toggleFavorito }) {
-  
-  // Obtenemos el ID de la película desde la URL
   const { id } = useParams()
-  
-  // Estado para almacenar la película cargada
-  const [pelicula, setPelicula] = useState(null)
-  const [cargando, setCargando] = useState(true)
+  const peliculaId = Number(id)
+  const pelicula = useMemo(
+    () => peliculas.find((item) => item.id === peliculaId),
+    [peliculaId],
+  )
 
   // Estados para el formulario de compra de boletos
   const [nombre, setNombre] = useState("")
@@ -50,34 +26,8 @@ function Detalle({ favoritos = [], toggleFavorito }) {
   const [horario, setHorario] = useState("")
   const [mensaje, setMensaje] = useState("")
   
-  // Estado para almacenar la compra realizada (objeto en estado)
   const [compraRealizada, setCompraRealizada] = useState(null)
 
-  // ========================================
-  // useEffect - CARGAR PELÍCULA POR ID
-  // ========================================
-  useEffect(() => {
-    async function cargarPelicula() {
-      try {
-        // Importamos los datos de películas
-        const response = await import("../data/peliculas.json")
-        const peliculas = response.default
-        
-        // Buscamos la película por ID
-        const peliculaEncontrada = peliculas.find(p => p.id === parseInt(id))
-        
-        setPelicula(peliculaEncontrada)
-        setCargando(false)
-      } catch (error) {
-        console.error("Error al cargar película:", error)
-        setCargando(false)
-      }
-    }
-    
-    cargarPelicula()
-  }, [id]) // Se ejecuta cuando cambia el ID en la URL
-
-  // Verificar si la película está en favoritos
   const esFavorito = pelicula ? favoritos.some(fav => fav.id === pelicula.id) : false
 
   // Horarios disponibles
@@ -86,17 +36,6 @@ function Detalle({ favoritos = [], toggleFavorito }) {
   // Precio por boleto
   const precioBoleto = 85
 
-  // Estado de carga
-  if (cargando) {
-    return (
-      <main className="page-container" style={{ textAlign: "center", paddingTop: "60px" }}>
-        <h2>Cargando película...</h2>
-        <p>Por favor espera un momento</p>
-      </main>
-    )
-  }
-
-  // En el caso que no se encuentre la película
   if (!pelicula) {
     return (
       <main className="page-container" style={{ textAlign: "center", paddingTop: "60px" }}>
