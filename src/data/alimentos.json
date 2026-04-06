@@ -5,21 +5,24 @@
       "name": "Refresco Grande",
       "image": "https://images.unsplash.com/photo-1581006852262-e4307cf6283a?w=400",
       "price": 75.00,
-      "description": "Coca-Cola, Sprite o Fanta de 32oz"
+      "description": "Coca-Cola, Sprite o Fanta de 32oz",
+      "category": "bebidas"
     },
     {
       "id": 2,
       "name": "ICEE Mediano",
       "image": "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400",
       "price": 65.00,
-      "description": "Frambuesa, Cereza o Uva"
+      "description": "Frambuesa, Cereza o Uva",
+      "category": "bebidas"
     },
     {
       "id": 3,
       "name": "Café Americano",
       "image": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400",
       "price": 55.00,
-      "description": "Café recién preparado 12oz"
+      "description": "Café recién preparado 12oz",
+      "category": "bebidas"
     }
   ],
   "comestibles": [
@@ -28,21 +31,24 @@
       "name": "Palomitas Grandes",
       "image": "https://images.unsplash.com/photo-1585647347483-22b66260dfff?w=400",
       "price": 95.00,
-      "description": "Palomitas de maíz con mantequilla"
+      "description": "Palomitas de maíz con mantequilla",
+      "category": "comestibles"
     },
     {
       "id": 5,
       "name": "Hot Dog Jumbo",
       "image": "https://images.unsplash.com/photo-1612392062631-94e0e67e7206?w=400",
       "price": 75.00,
-      "description": "Salchicha jumbo con ingredientes"
+      "description": "Salchicha jumbo con ingredientes",
+      "category": "comestibles"
     },
     {
       "id": 6,
       "name": "Nachos con Queso",
       "image": "https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?w=400",
       "price": 85.00,
-      "description": "Totopos con queso derretido y jalapeños"
+      "description": "Totopos con queso derretido y jalapeños",
+      "category": "comestibles"
     }
   ],
   "dulces": [
@@ -51,21 +57,24 @@
       "name": "M&M's Grande",
       "image": "https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=400",
       "price": 55.00,
-      "description": "Chocolate con cacahuate"
+      "description": "Chocolate con cacahuate",
+      "category": "dulces"
     },
     {
       "id": 8,
       "name": "Gomitas Surtidas",
       "image": "https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?w=400",
       "price": 45.00,
-      "description": "Variedad de gomitas de frutas"
+      "description": "Variedad de gomitas de frutas",
+      "category": "dulces"
     },
     {
       "id": 9,
       "name": "Chocolate Hershey's",
       "image": "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=400",
       "price": 50.00,
-      "description": "Barra de chocolate con leche"
+      "description": "Barra de chocolate con leche",
+      "category": "dulces"
     }
   ],
   "combos": [
@@ -74,14 +83,16 @@
       "name": "Combo Individual",
       "image": "https://images.unsplash.com/photo-1505686994434-e3cc5abf1330?w=400",
       "price": 145.00,
-      "description": "Palomitas medianas + Refresco mediano"
+      "description": "Palomitas medianas + Refresco mediano",
+      "category": "combos"
     },
     {
       "id": 11,
       "name": "Combo Pareja",
       "image": "https://images.unsplash.com/photo-1585647347483-22b66260dfff?w=400",
       "price": 220.00,
-      "description": "Palomitas grandes + 2 Refrescos medianos"
+      "description": "Palomitas grandes + 2 Refrescos medianos",
+      "category": "combos"
     }
   ]
 }

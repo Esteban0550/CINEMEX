@@ -6,7 +6,8 @@
     "descripcion": "Jake Sully y Neytiri han formado una familia y hacen todo lo posible por permanecer juntos.",
     "genero": "Ciencia Ficción",
     "duracion": "192 min",
-    "clasificacion": "B"
+    "clasificacion": "B",
+    "precio": 85
   },
   {
     "id": 2,
@@ -15,7 +16,8 @@
     "descripcion": "Una emocionante aventura animada llena de diversión para toda la familia.",
     "genero": "Animación",
     "duracion": "95 min",
-    "clasificacion": "AA"
+    "clasificacion": "AA",
+    "precio": 75
   },
   {
     "id": 3,
@@ -24,7 +26,8 @@
     "descripcion": "Un drama intenso que explora los límites del ser humano.",
     "genero": "Drama",
     "duracion": "128 min",
-    "clasificacion": "B15"
+    "clasificacion": "B15",
+    "precio": 85
   },
   {
     "id": 4,
@@ -33,7 +36,8 @@
     "descripcion": "Sam Wilson asume el manto del Capitán América en una nueva era de aventuras.",
     "genero": "Acción",
     "duracion": "145 min",
-    "clasificacion": "B"
+    "clasificacion": "B",
+    "precio": 95
   },
   {
     "id": 5,
@@ -42,7 +46,8 @@
     "descripcion": "La batalla final por la humanidad ha comenzado.",
     "genero": "Anime",
     "duracion": "150 min",
-    "clasificacion": "B15"
+    "clasificacion": "B15",
+    "precio": 90
   },
   {
     "id": 6,
@@ -51,6 +56,7 @@
     "descripcion": "Bob Esponja y Patricio viven una nueva aventura submarina.",
     "genero": "Animación",
     "duracion": "88 min",
-    "clasificacion": "AA"
+    "clasificacion": "AA",
+    "precio": 75
   }
 ]

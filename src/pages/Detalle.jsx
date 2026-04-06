@@ -1,14 +1,14 @@
-import { useMemo, useState } from "react"
-import { useParams } from "react-router-dom"
-import Button from "../components/Button"
+// ruta: /pelicula/:id - detalle de película
+import { useMemo } from "react"
+import { useParams, Link } from "react-router-dom"
+import PageWrapper from "../components/PageWrapper"
 import { peliculas } from "../data"
-import { 
-  IconHeartFilled, 
-  IconHeartOutline, 
-  IconMovie, 
-  IconClock, 
-  IconTicket, 
-  IconEmail 
+import {
+  IconHeartFilled,
+  IconHeartOutline,
+  IconMovie,
+  IconClock,
+  IconTicket
 } from "../components/Icons"
 
 function Detalle({ favoritos = [], toggleFavorito }) {
@@ -16,365 +16,102 @@ function Detalle({ favoritos = [], toggleFavorito }) {
   const peliculaId = Number(id)
   const pelicula = useMemo(
     () => peliculas.find((item) => item.id === peliculaId),
-    [peliculaId],
+    [peliculaId]
   )
 
-  // Estados para el formulario de compra de boletos
-  const [nombre, setNombre] = useState("")
-  const [email, setEmail] = useState("")
-  const [cantidadBoletos, setCantidadBoletos] = useState(1)
-  const [horario, setHorario] = useState("")
-  const [mensaje, setMensaje] = useState("")
-  
-  const [compraRealizada, setCompraRealizada] = useState(null)
-
-  const esFavorito = pelicula ? favoritos.some(fav => fav.id === pelicula.id) : false
-
-  // Horarios disponibles
-  const horariosDisponibles = ["14:30", "16:45", "19:00", "21:30", "23:45"]
-  
-  // Precio por boleto
-  const precioBoleto = 85
+  const esFavorito = pelicula ? favoritos.some((fav) => fav.id === pelicula.id) : false
 
   if (!pelicula) {
     return (
-      <main className="page-container" style={{ textAlign: "center", paddingTop: "60px" }}>
-        <h2>Película no encontrada</h2>
-        <p>La película que buscas no existe o ya no está disponible</p>
-      </main>
+      <PageWrapper>
+        <div style={{ textAlign: "center", paddingTop: "60px" }}>
+          <h2>Película no encontrada</h2>
+          <p>La película que buscas no existe.</p>
+          <Link to="/peliculas" className="btn btn-primary" style={{ marginTop: "20px", display: "inline-block" }}>
+            Ver Cartelera
+          </Link>
+        </div>
+      </PageWrapper>
     )
   }
 
-  // Evento submit/enviar - FORMULARIO CONTROLADO
-  function manejarCompra(e) {
-    // preventDefault evita que el formulario recargue la página
-    e.preventDefault()
-
-    // Validación básica
-    if (!horario) {
-      setMensaje("Por favor selecciona un horario")
-      return
-    }
-
-    // Creamos objeto de compra (manejo de objetos en estado)
-    const datosCompra = {
-      cliente: nombre,
-      email: email,
-      pelicula: pelicula.titulo,
-      boletos: cantidadBoletos,
-      horario: horario,
-      total: cantidadBoletos * precioBoleto,
-      fecha: new Date().toLocaleDateString()
-    }
-
-    // Actualizamos estado con objeto de compra
-    setCompraRealizada(datosCompra)
-    setMensaje(`¡Gracias ${nombre}! Tu compra ha sido procesada.`)
-
-    // Limpiar formulario
-    setNombre("")
-    setEmail("")
-    setCantidadBoletos(1)
-    setHorario("")
-  }
-
   return (
-    <main className="page-container">
-      <div style={{ 
-        display: "grid", 
-        gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-        gap: "40px",
-        alignItems: "start"
-      }}>
-        {/* Columna de imagen y datos */}
-        <div>
+    <PageWrapper>
+      <div className="detalle-layout">
+        {/* columna imagen */}
+        <div className="detalle-poster-col">
           <div style={{ position: "relative" }}>
             <img
               src={pelicula.imagen}
               alt={pelicula.titulo}
-              style={{
-                width: "100%",
-                maxWidth: "400px",
-                borderRadius: "16px",
-                boxShadow: "0 8px 30px rgba(0,0,0,0.2)"
+              className="detalle-poster"
+              onError={(e) => {
+                e.target.src = "https://via.placeholder.com/300x450/1A1A1A/FFD700?text=CINEMEX"
               }}
             />
-            
-          {/* ========================================
-              BOTÓN DE FAVORITOS
-              Permite agregar/quitar de lista de favoritos
-              onClick dispara toggleFavorito
-              ======================================== */}
+            {/* evento onClick - toggle favorito */}
             {toggleFavorito && (
               <button
                 onClick={() => toggleFavorito(pelicula)}
-                style={{
-                  position: "absolute",
-                  top: "16px",
-                  right: "16px",
-                  background: esFavorito ? "var(--cinemex-red)" : "rgba(255,255,255,0.9)",
-                  border: "none",
-                  borderRadius: "50%",
-                  width: "50px",
-                  height: "50px",
-                  cursor: "pointer",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}
+                className="detalle-fav-btn"
+                title={esFavorito ? "Quitar de favoritos" : "Agregar a favoritos"}
               >
-                {/* Icono SVG cambia según estado de favorito */}
-                {esFavorito ? (
-                  <IconHeartFilled size={24} color="white" />
-                ) : (
-                  <IconHeartOutline size={24} color="var(--cinemex-red)" />
-                )}
+                {esFavorito
+                  ? <IconHeartFilled size={24} color="white" />
+                  : <IconHeartOutline size={24} color="var(--cinemex-red)" />
+                }
               </button>
             )}
           </div>
-          
-          <h1 style={{ marginTop: "24px", fontSize: "2rem" }}>{pelicula.titulo}</h1>
-          
-          {/* ========================================
-              INFORMACIÓN DE LA PELÍCULA
-              Muestra género, duración y clasificación
-              ======================================== */}
-          <div style={{ 
-            display: "flex", 
-            gap: "16px", 
-            marginTop: "12px",
-            flexWrap: "wrap"
-          }}>
+        </div>
+
+        {/* columna info */}
+        <div className="detalle-info-col">
+          <h1>{pelicula.titulo}</h1>
+
+          <div className="detalle-tags">
             {pelicula.genero && (
-              <span className="movie-card-overlay" style={{ 
-                position: "static",
-                display: "flex",
-                alignItems: "center",
-                gap: "4px"
-              }}>
+              <span className="detalle-tag">
                 <IconMovie size={14} /> {pelicula.genero}
               </span>
             )}
             {pelicula.duracion && (
-              <span className="movie-card-overlay" style={{ 
-                position: "static",
-                display: "flex",
-                alignItems: "center",
-                gap: "4px"
-              }}>
+              <span className="detalle-tag">
                 <IconClock size={14} /> {pelicula.duracion}
               </span>
             )}
             {pelicula.clasificacion && (
-              <span className="movie-card-overlay" style={{ position: "static" }}>
-                {pelicula.clasificacion}
-              </span>
+              <span className="detalle-tag">{pelicula.clasificacion}</span>
             )}
           </div>
-          
-          <p style={{ marginTop: "20px", lineHeight: "1.8", color: "var(--cinemex-gray)" }}>
-            {pelicula.descripcion}
-          </p>
-        </div>
 
-        {/* Columna del formulario */}
-        <div style={{
-          background: "var(--cinemex-white)",
-          borderRadius: "16px",
-          padding: "32px",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.08)"
-        }}>
-          {/* ========================================
-              TÍTULO DEL FORMULARIO
-              ======================================== */}
-          <h2 style={{ 
-            marginBottom: "24px", 
-            color: "var(--cinemex-black)",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px"
-          }}>
-            <IconTicket size={24} color="var(--cinemex-red)" /> Comprar Boletos
-          </h2>
+          <p className="detalle-descripcion">{pelicula.descripcion}</p>
 
-          {/* FORMULARIO CONTROLADO con onSubmit */}
-          <form onSubmit={manejarCompra}>
-            {/* Campo Nombre - onChange actualiza estado */}
-            <div style={{ marginBottom: "20px" }}>
-              <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
-                Nombre completo:
-              </label>
-              <input
-                type="text"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-                placeholder="Ingresa tu nombre"
-                required
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  borderRadius: "8px",
-                  border: "2px solid var(--cinemex-cream)",
-                  fontSize: "1rem",
-                  transition: "border-color 0.3s"
-                }}
-              />
-            </div>
+          <div className="detalle-precio">
+            <IconTicket size={20} color="var(--cinemex-red)" />
+            <span>Boleto desde <strong>${pelicula.precio || 85}.00</strong></span>
+          </div>
 
-            {/* Campo Email - onChange actualiza estado */}
-            <div style={{ marginBottom: "20px" }}>
-              <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
-                Correo electrónico:
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="tu@email.com"
-                required
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  borderRadius: "8px",
-                  border: "2px solid var(--cinemex-cream)",
-                  fontSize: "1rem"
-                }}
-              />
-            </div>
+          {/* Link - navegación a /comprar con datos de película */}
+          <Link
+            to="/comprar"
+            state={{ pelicula }}
+            className="btn btn-primary btn-full"
+            style={{ display: "block", textAlign: "center", marginTop: "24px" }}
+          >
+            Comprar Boletos
+          </Link>
 
-            {/* Select de Horario - onChange actualiza estado */}
-            <div style={{ marginBottom: "20px" }}>
-              <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
-                Selecciona horario:
-              </label>
-              <select
-                value={horario}
-                onChange={(e) => setHorario(e.target.value)}
-                required
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  borderRadius: "8px",
-                  border: "2px solid var(--cinemex-cream)",
-                  fontSize: "1rem",
-                  background: "white"
-                }}
-              >
-                <option value="">-- Elige un horario --</option>
-                {horariosDisponibles.map((h) => (
-                  <option key={h} value={h}>{h} hrs</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Campo Cantidad - onChange actualiza estado numérico */}
-            <div style={{ marginBottom: "20px" }}>
-              <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
-                Cantidad de boletos:
-              </label>
-              <input
-                type="number"
-                min="1"
-                max="10"
-                value={cantidadBoletos}
-                onChange={(e) => setCantidadBoletos(Number(e.target.value))}
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  borderRadius: "8px",
-                  border: "2px solid var(--cinemex-cream)",
-                  fontSize: "1rem"
-                }}
-              />
-            </div>
-
-            {/* Resumen de compra - Renderizado dinámico */}
-            <div style={{
-              background: "var(--cinemex-cream)",
-              borderRadius: "8px",
-              padding: "16px",
-              marginBottom: "20px"
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                <span>Precio por boleto:</span>
-                <span>${precioBoleto}.00</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                <span>Cantidad:</span>
-                <span>{cantidadBoletos}</span>
-              </div>
-              <div style={{ 
-                display: "flex", 
-                justifyContent: "space-between",
-                borderTop: "2px solid var(--cinemex-gold)",
-                paddingTop: "12px",
-                marginTop: "8px",
-                fontWeight: "bold",
-                fontSize: "1.2rem"
-              }}>
-                <span>Total:</span>
-                <span style={{ color: "var(--cinemex-red)" }}>
-                  ${cantidadBoletos * precioBoleto}.00
-                </span>
-              </div>
-            </div>
-
-            {/* Botón Submit */}
-            <Button 
-              text="Comprar Ahora"
-              variant="primary"
-              fullWidth={true}
-            />
-          </form>
-
-          {/* Mensaje de confirmación - Renderizado condicional */}
-          {mensaje && (
-            <div style={{
-              marginTop: "20px",
-              padding: "16px",
-              background: compraRealizada ? "#d4edda" : "#fff3cd",
-              borderRadius: "8px",
-              color: compraRealizada ? "#155724" : "#856404"
-            }}>
-              <p style={{ fontWeight: "bold" }}>{mensaje}</p>
-            </div>
-          )}
-
-          {/* ========================================
-              CONFIRMACIÓN DE COMPRA
-              Se muestra cuando compraRealizada tiene datos
-              Renderiza objeto almacenado en estado
-              ======================================== */}
-          {compraRealizada && (
-            <div style={{
-              marginTop: "20px",
-              padding: "20px",
-              background: "linear-gradient(135deg, var(--cinemex-dark), var(--cinemex-black))",
-              borderRadius: "12px",
-              color: "white"
-            }}>
-              <h4 style={{ 
-                color: "var(--cinemex-gold)", 
-                marginBottom: "12px",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px"
-              }}>
-                <IconEmail size={18} color="var(--cinemex-gold)" /> Confirmación de Compra
-              </h4>
-              <p><strong>Cliente:</strong> {compraRealizada.cliente}</p>
-              <p><strong>Email:</strong> {compraRealizada.email}</p>
-              <p><strong>Película:</strong> {compraRealizada.pelicula}</p>
-              <p><strong>Horario:</strong> {compraRealizada.horario} hrs</p>
-              <p><strong>Boletos:</strong> {compraRealizada.boletos}</p>
-              <p><strong>Total pagado:</strong> ${compraRealizada.total}.00</p>
-              <p><strong>Fecha:</strong> {compraRealizada.fecha}</p>
-            </div>
-          )}
+          <Link
+            to="/peliculas"
+            className="btn btn-secondary"
+            style={{ display: "inline-block", marginTop: "12px" }}
+          >
+            Volver a Cartelera
+          </Link>
         </div>
       </div>
-    </main>
+    </PageWrapper>
   )
 }
 

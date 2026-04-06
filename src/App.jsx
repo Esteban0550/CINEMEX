@@ -11,13 +11,11 @@ function App() {
   function agregarAlCarrito(producto) {
     setCarrito((actual) => {
       const existente = actual.find((item) => item.id === producto.id)
-
       if (existente) {
         return actual.map((item) =>
-          item.id === producto.id ? { ...item, cantidad: item.cantidad + 1 } : item,
+          item.id === producto.id ? { ...item, cantidad: item.cantidad + 1 } : item
         )
       }
-
       return [...actual, { ...producto, cantidad: 1 }]
     })
   }
@@ -39,6 +37,7 @@ function App() {
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      {/* reutilizable - header en todas las páginas */}
       <Header cantidadCarrito={carrito.length} cantidadFavoritos={favoritos.length} />
 
       <main style={{ flex: 1 }}>
@@ -52,6 +51,7 @@ function App() {
         />
       </main>
 
+      {/* reutilizable - footer en todas las páginas */}
       <Footer />
     </div>
   )

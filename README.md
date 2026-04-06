@@ -1,172 +1,205 @@
-# CINEMEX - Optimizacion de rendimiento y buenas practicas (React + Vite)
+# Guion completo para video (que decir + donde abrir)
 
-Este proyecto fue optimizado para cumplir la actividad de evaluacion UX enfocada en organizacion del proyecto, buenas practicas y documentacion tecnica.
+Este guion esta hecho para explicar bien todo, en primera persona, con el orden de la rubrica y con ubicaciones exactas para abrir archivos rapido.
 
-## Objetivo de esta actualizacion
+## Mapa rapido durante la explicacion (sin perderte)
 
-Aplicar mejoras reales en estructura y mantenimiento del codigo para reducir complejidad, evitar cargas repetidas y facilitar futuras iteraciones del proyecto.
+Usa estas frases tal cual mientras grabas:
 
-## 1) Organizacion del proyecto
+- Cuando diga: "Aqui muestro el Header" -> abro: src/components/Header.jsx
+- Cuando diga: "Aqui muestro el Footer" -> abro: src/components/Footer.jsx
+- Cuando diga: "Aqui muestro una card reutilizable" -> abro: src/components/MovieCard.jsx
+- Cuando diga: "Aqui muestro la card de alimentos" -> abro: src/components/FoodCard.jsx
+- Cuando diga: "Aqui muestro props y estado global" -> abro: src/App.jsx
+- Cuando diga: "Aqui muestro las rutas" -> abro: src/routes/AppRoutes.jsx
+- Cuando diga: "Aqui muestro donde inicia React Router" -> abro: src/main.jsx
+- Cuando diga: "Aqui muestro formulario controlado" -> abro: src/pages/ComprarPage.jsx
+- Cuando diga: "Aqui muestro otro formulario" -> abro: src/pages/ContactoPage.jsx
+- Cuando diga: "Aqui muestro eventos de filtros y busqueda" -> abro: src/pages/Cartelera.jsx
+- Cuando diga: "Aqui muestro favoritos y navegacion a detalle" -> abro: src/pages/Favoritos.jsx
+- Cuando diga: "Aqui muestro detalle con ruta dinamica" -> abro: src/pages/Detalle.jsx
+- Cuando diga: "Aqui muestro consumo de datos" -> abro: src/data/index.js
+- Cuando diga: "Aqui muestro el JSON de peliculas" -> abro: src/data/peliculas.json
+- Cuando diga: "Aqui muestro el JSON de alimentos" -> abro: src/data/alimentos.json
+- Cuando diga: "Aqui muestro flex, grid y media queries" -> abro: src/App.css
 
-### Cambios aplicados
+Orden recomendado para no trabarte:
 
-- Se separo el enrutado en un archivo dedicado:
-  - `src/routes/AppRoutes.jsx`
-- `src/App.jsx` ahora queda enfocado en estado global y layout (Header/Main/Footer).
-- Se agrego un punto central de datos:
-  - `src/data/index.js`
-- Se mantiene `src/data/alimentos.json` y `src/data/peliculas.json` como fuente unica de datos.
+1. src/App.jsx
+2. src/components/Header.jsx
+3. src/components/Footer.jsx
+4. src/components/MovieCard.jsx
+5. src/routes/AppRoutes.jsx
+6. src/main.jsx
+7. src/pages/Cartelera.jsx
+8. src/pages/Detalle.jsx
+9. src/pages/ComprarPage.jsx
+10. src/data/index.js
+11. src/App.css
 
-### Beneficio tecnico
+## 1. Arquitectura del proyecto
 
-- Menor acoplamiento entre enrutado y estado global.
-- Mejor mantenibilidad: rutas en un solo lugar.
-- Mejor escalabilidad para agregar nuevas vistas sin ensuciar `App.jsx`.
+### Que digo
 
-## 2) Buenas practicas aplicadas
+Yo organice el proyecto por capas para mantenerlo limpio y escalable.
+Tengo una carpeta de componentes reutilizables, otra de paginas, otra para rutas y otra para datos JSON.
+Mi objetivo fue separar responsabilidades: los componentes muestran interfaz, las paginas componen vistas completas, las rutas conectan la navegacion y los datos se centralizan fuera de las vistas.
 
-### a) Eliminacion de codigo innecesario
+Tambien explico reutilizacion.
+Header y Footer se repiten en toda la aplicacion.
+MovieCard se reutiliza en Home, Cartelera y Favoritos.
+FoodCard se reutiliza para categorias de alimentos.
+Button e Input se usan en varias pantallas para mantener consistencia.
 
-- Se elimino `src/detalles.json` por ser un archivo redundante (duplicaba informacion de peliculas y no se usaba).
-- Se limpiaron bloques de comentarios extensos y desactualizados en paginas clave.
+Sobre props, yo explico dos casos claros.
+Primer caso: en App paso estados y funciones como favoritos, carrito, toggleFavorito y agregarAlCarrito hacia AppRoutes y paginas.
+Segundo caso: MovieCard recibe props de datos (titulo, imagen, genero, duracion) y props de comportamiento (onClick, onToggleFavorito).
 
-### b) Uso adecuado de archivos para consumo de datos
+### Donde abro
 
-Antes:
-- Varias paginas hacian `import()` dinamico dentro de `useEffect` para leer JSON en cada vista.
+- src/App.jsx
+- src/routes/AppRoutes.jsx
+- src/components/Header.jsx
+- src/components/Footer.jsx
+- src/components/MovieCard.jsx
+- src/components/FoodCard.jsx
+- src/components/Input.jsx
+- src/components/Button.jsx
+- src/components/PageWrapper.jsx
+- src/components/HeroBanner.jsx
+- src/components/MovieCarousel.jsx
+- src/data/index.js
 
-Ahora:
-- Las vistas consumen los datos desde `src/data/index.js`.
-- Se evita repetir logica de carga y estados de carga innecesarios para datos locales estaticos.
+### Que muestro en pantalla
 
-Paginas optimizadas:
-- `src/pages/Home.jsx`
-- `src/pages/Cartelera.jsx`
-- `src/pages/Detalle.jsx`
-- `src/pages/Alimentos.jsx`
+Muestro App para evidenciar el estado central.
+Luego abro 2 o 3 componentes reutilizables y explico por que no repito codigo.
+Cierro esta parte mostrando src/data/index.js para justificar la separacion de datos.
 
-### c) Mejora de actualizacion de estado
+## 2. Diseno, layout y responsividad
 
-- En `src/App.jsx` se migraron actualizaciones a forma funcional (`setState(prev => ...)`) para evitar dependencias del cierre y hacer el estado mas robusto.
+### Que digo
 
-### d) Mejoras de rendimiento ligeras
+Para layout use Flexbox y Grid segun el tipo de distribucion.
+Flexbox lo use cuando necesitaba alinear en una sola direccion, por ejemplo en header, botones o filas.
+Grid lo use en galerias de tarjetas y secciones con columnas.
 
-- Se uso `useMemo` para filtrar peliculas y generar generos en vistas donde aplica (`Home` y `Cartelera`).
+La diferencia principal que explico es simple.
+Flexbox me resuelve una dimension (fila o columna).
+Grid me permite controlar filas y columnas al mismo tiempo.
 
-## 3) Documentacion del proceso (justificacion tecnica)
+En responsividad, yo probe en desktop y movil.
+En movil se activa menu hamburguesa, cambian columnas de tarjetas y footer se adapta a una columna.
+Esto demuestra que la interfaz responde de forma funcional y no solo visual.
 
-### Que se optimizo
+### Donde abro
 
-- Estructura de rutas.
-- Estructura de datos.
-- Limpieza de codigo redundante.
-- Flujo de estado en carrito/favoritos.
-- Filtrado de datos con memoizacion.
+- src/App.css
+- src/index.css
+- src/components/Header.jsx
+- src/components/Footer.jsx
+- src/pages/Home.jsx
+- src/pages/Cartelera.jsx
+- src/pages/Alimentos.jsx
 
-### Por que se eligieron estas decisiones
+### Que muestro en pantalla
 
-- Separar rutas mejora lectura y mantenimiento.
-- Centralizar datos evita duplicacion de logica y posibles inconsistencias.
-- Eliminar archivos no usados reduce deuda tecnica.
-- Usar setters funcionales evita errores cuando hay actualizaciones consecutivas.
-- Memoizar filtros reduce calculo en cada render cuando no cambian dependencias.
+En App.css busco reglas de display flex, display grid y media queries.
+Despues corro la app y cambio entre vista desktop y movil para comprobar el comportamiento.
 
-## Estructura principal actualizada
+## 3. Eventos y formularios
 
-```text
-src/
-  components/
-  data/
-    alimentos.json
-    peliculas.json
-    index.js
-  pages/
-    Alimentos.jsx
-    Cartelera.jsx
-    Detalle.jsx
-    Favoritos.jsx
-    Home.jsx
-    Otros.jsx
-    Privacidad.jsx
-    Terminos.jsx
-  routes/
-    AppRoutes.jsx
-  App.css
-  App.jsx
-  index.css
-  main.jsx
-```
+### Que digo
 
-## Validacion realizada
+En esta parte explico que implemente onClick, onChange y onSubmit.
+onClick lo uso para acciones de usuario como abrir menu, agregar al carrito, marcar favoritos y navegar.
+onChange lo uso para busquedas y campos controlados.
+onSubmit lo uso para procesar envios de formularios.
 
-Comandos ejecutados despues de los cambios:
+Sobre formularios, explico que son controlados porque el valor de cada input vive en el estado.
+Eso me permite validar, limpiar campos y controlar flujo de envio de forma predecible.
 
-```bash
-npm run lint
-npm run build
-```
+Tambien aclaro consumo de datos.
+No hardcodeo peliculas ni alimentos dentro de cada pagina.
+Los datos salen de JSON y se importan desde un punto central.
 
-Resultado:
-- Lint sin errores.
-- Build exitoso en Vite.
+### Donde abro
 
-## Tecnologias
+- src/pages/Home.jsx
+- src/pages/Cartelera.jsx
+- src/pages/Alimentos.jsx
+- src/pages/Detalle.jsx
+- src/pages/ContactoPage.jsx
+- src/pages/ComprarPage.jsx
+- src/pages/Otros.jsx
+- src/components/Input.jsx
+- src/data/index.js
+- src/data/peliculas.json
+- src/data/alimentos.json
 
-- React 19
-- Vite
-- React Router DOM
-- Swiper
-- CSS
+### Que muestro en pantalla
 
-## Scripts
+Muestro un onClick, un onChange y un onSubmit reales.
+Luego enseño un formulario controlado completo en ComprarPage o ContactoPage.
+Cierro enseñando los JSON para demostrar origen de datos.
 
-```bash
-npm run dev
-npm run build
-npm run preview
-npm run lint
-```
+## 4. Navegacion con React Router
 
-## Criterios de evaluacion y formato de entrega (actividad)
+### Que digo
 
-### Entregables solicitados
+Yo centralice rutas en un archivo para que el mapa de navegacion sea claro.
+En AppRoutes estan todas las rutas principales, incluida la ruta dinamica de detalle por id y la ruta 404.
 
-- Link al repositorio del proyecto.
-- Documento PDF con los contenidos de la actividad.
+Tambien explico componentes de navegacion.
+Route define que vista corresponde a cada URL.
+NavLink lo uso en el menu para resaltar ruta activa.
+Link lo uso para navegar dentro de cards y botones.
 
-### Reglas de entrega
+La evidencia clave: es SPA.
+Cambio entre pantallas y la URL cambia, pero no hay recarga completa.
 
-- Entrega en tiempo y forma.
-- Por cada dia de retraso se descuentan 2 puntos.
-- Buena ortografia y redaccion.
+### Donde abro
 
-### Estructura minima del PDF
+- src/main.jsx
+- src/routes/AppRoutes.jsx
+- src/components/Header.jsx
+- src/components/Footer.jsx
+- src/components/MovieCard.jsx
+- src/pages/Detalle.jsx
+- src/pages/NotFoundPage.jsx
 
-- Portada con:
-  - Logotipo de la institucion
-  - Nombre del TSU
-  - Asignatura
-  - Cuatrimestre
-  - Nombre completo del alumno
-  - Grupo
-  - Cuatrimestre actual
-- Desarrollo de la actividad
-- Conclusion
+### Que muestro en pantalla
 
-### Nombre del archivo PDF
+Abro AppRoutes y leo rapidamente cada path.
+Luego navego en vivo por Home, Cartelera, Detalle y Comprar para mostrar cambio de URL sin reload.
 
-Formato requerido:
+## 5. Integracion del proyecto
 
-```text
-Actividad#_ApellidoPaternoPrimerNombre
-```
+### Que digo
 
-Ejemplo:
+En integracion explico que no son pantallas aisladas, sino un flujo conectado.
+Desde Home el usuario puede explorar peliculas, ver detalle, marcar favoritos, pasar a compra o ir a alimentos.
+Todo se mantiene coherente porque App centraliza estados compartidos.
 
-```text
-Actividad3_CabJesus.pdf
-```
+Tambien explico el flujo principal de usuario.
+Inicio -> Cartelera -> Detalle -> Comprar.
+Y flujo secundario: Inicio -> Comida -> Carrito.
 
-## Nota academica
+### Donde abro
 
-Este proyecto tiene fines educativos para practica de React, organizacion modular, rutas, estado compartido y buenas practicas de frontend.
+- src/App.jsx
+- src/pages/Home.jsx
+- src/pages/Cartelera.jsx
+- src/pages/Detalle.jsx
+- src/pages/ComprarPage.jsx
+- src/pages/Alimentos.jsx
+- src/pages/Favoritos.jsx
+
+### Que muestro en pantalla
+
+Hago un recorrido real de usuario entre esas vistas para comprobar continuidad de experiencia.
+
+## Cierre listo para decir
+
+Como conclusion, mi proyecto cumple con los criterios de arquitectura por componentes, props para comunicacion, eventos y formularios controlados, consumo de datos por JSON, navegacion con React Router y diseno responsive funcional.
+Ademas, demostre el flujo completo entre pantallas en una SPA sin recargas.

@@ -1,23 +1,21 @@
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import { useNavigate } from "react-router-dom";
-import Button from "./Button";
+// único - carrusel de películas destacadas
+import { Swiper, SwiperSlide } from "swiper/react"
+import { Navigation, Pagination, Autoplay } from "swiper/modules"
+import { useNavigate } from "react-router-dom"
+import Button from "./Button"
 
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+import "swiper/css"
+import "swiper/css/navigation"
+import "swiper/css/pagination"
 
 function MovieCarousel({ movies = [] }) {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  if (!movies.length) {
-    return null;
-  }
+  if (!movies.length) return null
 
   return (
     <section className="carousel-section">
       <h2 className="section-title">ESTRENOS</h2>
-
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         navigation
@@ -40,12 +38,8 @@ function MovieCarousel({ movies = [] }) {
                 <h3>{movie.titulo}</h3>
                 <p>{movie.descripcion}</p>
                 <div className="movie-hero-actions">
-                  <Button text="Comprar boletos" variant="primary" onClick={() => navigate("/cartelera")} />
-                  <Button
-                    text="Ver detalle"
-                    variant="secondary"
-                    onClick={() => navigate(`/pelicula/${movie.id}`)}
-                  />
+                  <Button text="Comprar boletos" variant="primary" onClick={() => navigate("/comprar", { state: { pelicula: movie } })} />
+                  <Button text="Ver detalle" variant="secondary" onClick={() => navigate(`/pelicula/${movie.id}`)} />
                 </div>
               </div>
             </article>
@@ -53,7 +47,7 @@ function MovieCarousel({ movies = [] }) {
         ))}
       </Swiper>
     </section>
-  );
+  )
 }
 
-export default MovieCarousel;
+export default MovieCarousel

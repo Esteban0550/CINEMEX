@@ -1,6 +1,6 @@
 /* ===== CINEMEX - Variables Globales ===== */
 :root {
-  /* Paleta de colores Cinemex */
+  /* paleta de colores Cinemex (rojo, negro, dorado) */
   --cinemex-red: #E41C23;
   --cinemex-red-dark: #B91620;
   --cinemex-red-light: #FF4D54;
@@ -12,18 +12,23 @@
   --cinemex-gray-light: #8A8A8A;
   --cinemex-white: #FFFFFF;
   --cinemex-cream: #F8F8F8;
-  
-  /* Tipografía */
-  font-family: 'Montserrat', 'Roboto', system-ui, -apple-system, sans-serif;
+
+  /* variables estándar */
+  --color-primary: #E41C23;
+  --color-secondary: #FFD700;
+  --color-bg: #F8F8F8;
+  --color-text: #1A1A1A;
+  --font-main: 'Montserrat', 'Roboto', system-ui, -apple-system, sans-serif;
+
+  /* tipografía */
+  font-family: var(--font-main);
   line-height: 1.6;
   font-weight: 400;
-  
-  /* Esquema de colores */
+
   color-scheme: light;
-  color: var(--cinemex-black);
-  background-color: var(--cinemex-cream);
-  
-  /* Optimización de renderizado */
+  color: var(--color-text);
+  background-color: var(--color-bg);
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -41,13 +46,13 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: var(--cinemex-cream);
+  background-color: var(--color-bg);
 }
 
-/* ===== Tipografía ===== */
+/* ===== Tipografía - jerarquía clara ===== */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
-  color: var(--cinemex-black);
+  color: var(--color-text);
   line-height: 1.3;
 }
 
@@ -71,13 +76,13 @@ button {
 }
 
 button:focus {
-  outline: 2px solid var(--cinemex-gold);
+  outline: 2px solid var(--color-secondary);
   outline-offset: 2px;
 }
 
 /* ===== Links ===== */
 a {
-  color: var(--cinemex-red);
+  color: var(--color-primary);
   text-decoration: none;
   transition: color 0.3s ease;
 }
@@ -86,20 +91,8 @@ a:hover {
   color: var(--cinemex-red-dark);
 }
 
-/* ===== Scrollbar Personalizado ===== */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--cinemex-cream);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--cinemex-gray-light);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--cinemex-gray);
-}
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--cinemex-cream); }
+::-webkit-scrollbar-thumb { background: var(--cinemex-gray-light); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--cinemex-gray); }

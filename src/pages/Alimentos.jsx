@@ -1,27 +1,25 @@
-import { useState } from "react";
-import FoodCard from "../components/FoodCard";
-import Button from "../components/Button";
-import { alimentos } from "../data";
-import { 
-  IconPopcorn, 
-  IconCart, 
-  IconCelebration, 
-  IconStar, 
-  IconDrink, 
-  IconFood, 
+// ruta: /comida - alimentos y bebidas
+import { useState } from "react"
+import FoodCard from "../components/FoodCard"
+import Button from "../components/Button"
+import PageWrapper from "../components/PageWrapper"
+import { alimentos } from "../data"
+import {
+  IconPopcorn,
+  IconCart,
+  IconCelebration,
+  IconStar,
+  IconDrink,
+  IconFood,
   IconCandy,
   IconClose
-} from "../components/Icons";
+} from "../components/Icons"
 
 function Alimentos({ agregarAlCarrito, carrito = [], eliminarDelCarrito, totalCarrito = 0 }) {
-  // Estado para mostrar/ocultar carrito
-  const [mostrarCarrito, setMostrarCarrito] = useState(false);
+  const [mostrarCarrito, setMostrarCarrito] = useState(false)
 
   return (
-    <main className="page-container">
-      {/* ========================================
-          TÍTULO DE LA SECCIÓN
-          ======================================== */}
+    <PageWrapper>
       <h1 className="section-title" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
         <IconPopcorn size={32} color="var(--cinemex-gold)" /> Alimentos y Bebidas
       </h1>
@@ -29,10 +27,7 @@ function Alimentos({ agregarAlCarrito, carrito = [], eliminarDelCarrito, totalCa
         Complementa tu experiencia de cine con nuestros deliciosos snacks
       </p>
 
-      {/* ========================================
-          BOTÓN DEL CARRITO
-          onClick alterna visibilidad del panel
-          ======================================== */}
+      {/* evento onClick - toggle carrito */}
       <div style={{ marginBottom: "24px" }}>
         <Button
           text={<span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -43,59 +38,41 @@ function Alimentos({ agregarAlCarrito, carrito = [], eliminarDelCarrito, totalCa
         />
       </div>
 
-      {/* ========================================
-          PANEL DEL CARRITO
-          Se muestra/oculta basado en estado mostrarCarrito
-          Renderizado condicional de contenido
-          ======================================== */}
+      {/* panel carrito - renderizado condicional */}
       {mostrarCarrito && (
-        <div className="carrito-panel" style={{
+        <div style={{
           background: "var(--cinemex-white)",
           borderRadius: "16px",
           padding: "24px",
           marginBottom: "32px",
           boxShadow: "0 4px 20px rgba(0,0,0,0.1)"
         }}>
-          <h3 style={{ 
-            marginBottom: "16px", 
-            color: "var(--cinemex-black)",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px"
-          }}>
+          <h3 style={{ marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
             <IconCart size={20} color="var(--cinemex-red)" /> Tu Carrito
           </h3>
-          
+
           {carrito.length === 0 ? (
-            <p style={{ color: "var(--cinemex-gray)" }}>
-              Tu carrito está vacío. ¡Agrega algunos productos!
-            </p>
+            <p style={{ color: "var(--cinemex-gray)" }}>Tu carrito está vacío.</p>
           ) : (
             <>
-              {/* Lista de productos en carrito */}
               <div style={{ marginBottom: "16px" }}>
                 {carrito.map((item) => (
-                  <div 
-                    key={item.id}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: "12px 0",
-                      borderBottom: "1px solid var(--cinemex-cream)"
-                    }}
-                  >
+                  <div key={item.id} style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "12px 0",
+                    borderBottom: "1px solid var(--cinemex-cream)"
+                  }}>
                     <div>
                       <strong>{item.name}</strong>
-                      <span style={{ marginLeft: "8px", color: "var(--cinemex-gray)" }}>
-                        x{item.cantidad}
-                      </span>
+                      <span style={{ marginLeft: "8px", color: "var(--cinemex-gray)" }}>x{item.cantidad}</span>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                       <span style={{ color: "var(--cinemex-red)", fontWeight: "bold" }}>
                         ${(item.price * item.cantidad).toFixed(2)}
                       </span>
-                      {/* Botón eliminar con icono SVG */}
+                      {/* evento onClick - eliminar */}
                       <button
                         onClick={() => eliminarDelCarrito(item.id)}
                         style={{
@@ -117,8 +94,6 @@ function Alimentos({ agregarAlCarrito, carrito = [], eliminarDelCarrito, totalCa
                   </div>
                 ))}
               </div>
-              
-              {/* Total del carrito */}
               <div style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -131,10 +106,9 @@ function Alimentos({ agregarAlCarrito, carrito = [], eliminarDelCarrito, totalCa
                   ${totalCarrito.toFixed(2)}
                 </strong>
               </div>
-              
-              <Button 
+              <Button
                 text="Proceder al Pago"
-                onClick={() => alert(`Total a pagar: $${totalCarrito.toFixed(2)}\n¡Gracias por tu compra!`)}
+                onClick={() => alert(`Total: $${totalCarrito.toFixed(2)}\n¡Gracias por tu compra!`)}
                 variant="primary"
                 fullWidth={true}
               />
@@ -143,23 +117,15 @@ function Alimentos({ agregarAlCarrito, carrito = [], eliminarDelCarrito, totalCa
         </div>
       )}
 
-      {/* ========================================
-          BANNER PROMOCIONAL
-          Sección destacada con oferta especial
-          ======================================== */}
+      {/* banner promo */}
       <div className="banner" style={{ marginTop: "0", marginBottom: "40px" }}>
         <h3 className="banner-title" style={{ display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" }}>
           <IconCelebration size={24} /> Combo Especial
         </h3>
-        <p className="banner-text">
-          Al comprar tu combo, ¡obtén un 15% de descuento en tu próxima visita!
-        </p>
+        <p className="banner-text">Al comprar tu combo, ¡obtén un 15% de descuento en tu próxima visita!</p>
       </div>
 
-      {/* ========================================
-          SECCIÓN: COMBOS RECOMENDADOS
-          Mapea array de combos a componentes FoodCard
-          ======================================== */}
+      {/* combos - .map() desde JSON */}
       <section>
         <h2 className="section-subtitle" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <IconStar size={24} color="var(--cinemex-gold)" /> Combos Recomendados
@@ -172,15 +138,13 @@ function Alimentos({ agregarAlCarrito, carrito = [], eliminarDelCarrito, totalCa
               image={combo.image}
               price={combo.price}
               description={combo.description}
-              onAgregar={() => agregarAlCarrito(combo)}
+              onAdd={() => agregarAlCarrito(combo)}
             />
           ))}
         </div>
       </section>
 
-      {/* ========================================
-          SECCIÓN: BEBIDAS
-          ======================================== */}
+      {/* bebidas */}
       <section style={{ marginTop: "48px" }}>
         <h2 className="section-subtitle" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <IconDrink size={24} color="var(--cinemex-red)" /> Bebidas
@@ -193,15 +157,13 @@ function Alimentos({ agregarAlCarrito, carrito = [], eliminarDelCarrito, totalCa
               image={bebida.image}
               price={bebida.price}
               description={bebida.description}
-              onAgregar={() => agregarAlCarrito(bebida)}
+              onAdd={() => agregarAlCarrito(bebida)}
             />
           ))}
         </div>
       </section>
 
-      {/* ========================================
-          SECCIÓN: COMESTIBLES
-          ======================================== */}
+      {/* comestibles */}
       <section style={{ marginTop: "48px" }}>
         <h2 className="section-subtitle" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <IconFood size={24} color="var(--cinemex-red)" /> Comestibles
@@ -214,15 +176,13 @@ function Alimentos({ agregarAlCarrito, carrito = [], eliminarDelCarrito, totalCa
               image={comestible.image}
               price={comestible.price}
               description={comestible.description}
-              onAgregar={() => agregarAlCarrito(comestible)}
+              onAdd={() => agregarAlCarrito(comestible)}
             />
           ))}
         </div>
       </section>
 
-      {/* ========================================
-          SECCIÓN: SNACKS Y DULCES
-          ======================================== */}
+      {/* dulces */}
       <section style={{ marginTop: "48px" }}>
         <h2 className="section-subtitle" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <IconCandy size={24} color="var(--cinemex-red)" /> Snacks y Dulces
@@ -235,14 +195,13 @@ function Alimentos({ agregarAlCarrito, carrito = [], eliminarDelCarrito, totalCa
               image={dulce.image}
               price={dulce.price}
               description={dulce.description}
-              onAgregar={() => agregarAlCarrito(dulce)}
+              onAdd={() => agregarAlCarrito(dulce)}
             />
           ))}
         </div>
       </section>
-    </main>
-  );
+    </PageWrapper>
+  )
 }
 
-// Exportamos el componente para uso en App.jsx
-export default Alimentos;
+export default Alimentos
